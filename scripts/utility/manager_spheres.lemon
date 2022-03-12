@@ -1,0 +1,300 @@
+function u64 SpheresCostumer.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
+{
+	// Use the stage number (preset stages) or algorithmic stage information to get the emerald color ID
+	u8 emeraldID
+	if !(bluespheres.minigame_mode)
+		emeraldID = global.next_bluespheres
+	else
+		emeraldID = (u8[0xffffffa4] & 0x07)
+	
+	// Convert the received ID to string. We can definitely skip this step and use ID instead of string in the sprite name, but string is clearer
+	u64 emeraldColor
+	if (emeraldID == 0x00)
+		emeraldColor = "green"
+	else if (emeraldID == 0x01)
+		emeraldColor = "orange"
+	else if (emeraldID == 0x02)
+		emeraldColor = "pink"
+	else if (emeraldID == 0x03)
+		emeraldColor = "blue"
+	else if (emeraldID == 0x04)
+		emeraldColor = "gray"
+	else if (emeraldID == 0x05)
+		emeraldColor = "red"
+	else if (emeraldID == 0x06)
+		emeraldColor = "cyan"
+	else if (emeraldID == 0x07)
+		emeraldColor = "yellow"
+	
+	// Determine whether di is a super emerald or not and build key
+	u64 emeraldType = (sphereID == 0x0d) ? "super" : "chaos"
+	s64 key = stringformat("emerald_%s_%s_size_%d", emeraldType, emeraldColor, sphereSize16)
+	
+	// Return sprite key
+	return key
+}
+
+function u32 SpheresCostumer.Manager.get2DTransformSize32(u8 sphereSize32)
+{
+	u32 sphereTransform
+
+	if (sphereSize32 == 0x1f)
+		sphereTransform = 4096
+	else if (sphereSize32 == 0x1e)
+		sphereTransform = 6144
+	else if (sphereSize32 == 0x1d)
+		sphereTransform = 8192
+	else if (sphereSize32 == 0x1c)
+		sphereTransform = 10240
+	else  if (sphereSize32 == 0x1b)
+		sphereTransform = 12288 
+	else  if (sphereSize32 == 0x1a)
+		sphereTransform = 14336 
+	else if (sphereSize32 == 0x19)
+		sphereTransform = 16384 
+	else if (sphereSize32 == 0x18)
+		sphereTransform = 18432 
+	else if (sphereSize32 == 0x17)
+		sphereTransform = 20480 
+	else if (sphereSize32 == 0x16)
+		sphereTransform = 22528 
+	else if (sphereSize32 == 0x15)
+		sphereTransform = 24576 
+	else if (sphereSize32 == 0x14)
+		sphereTransform = 26624 
+	else if (sphereSize32 == 0x13)
+		sphereTransform = 28672 
+	else if (sphereSize32 == 0x12)
+		sphereTransform = 30720 
+	else if (sphereSize32 == 0x11)
+		sphereTransform = 32768 
+	else if (sphereSize32 == 0x10)
+		sphereTransform = 34816 
+	else if (sphereSize32 == 0x0f)
+		sphereTransform = 36864
+	else if (sphereSize32 == 0x0e)
+		sphereTransform = 38312 
+	else if (sphereSize32 == 0x0d)
+		sphereTransform = 40960 
+	else if (sphereSize32 == 0x0c)
+		sphereTransform = 43008 
+	else if (sphereSize32 == 0x0b)
+		sphereTransform = 45056 
+	else if (sphereSize32 == 0x0a)
+		sphereTransform = 47104 
+	else if (sphereSize32 == 0x09)
+		sphereTransform = 49152 
+	else if (sphereSize32 == 0x08)
+		sphereTransform = 51200 
+	else if (sphereSize32 == 0x07)
+		sphereTransform = 53248 
+	else if (sphereSize32 == 0x06)
+		sphereTransform = 55296
+	else if (sphereSize32 == 0x05)
+		sphereTransform = 57344 
+	else if (sphereSize32 == 0x04)
+		sphereTransform = 59392 
+	else if (sphereSize32 == 0x03)
+		sphereTransform = 61440 
+	else if (sphereSize32 == 0x02)
+		sphereTransform = 63488
+	else if (sphereSize32 == 0x01)
+		sphereTransform = 64512 
+	else
+		sphereTransform = 65536
+	
+	return sphereTransform
+}
+
+function u32 SpheresCostumer.Manager.get2DTransformSize16(u8 sphereSize16)
+{
+	u32 sphereTransform
+
+	if (sphereSize16 == 0x0f)
+		sphereTransform = 4096 
+	else if (sphereSize16 == 0x0e)
+		sphereTransform = 8192
+	else  if (sphereSize16 == 0x0d)
+		sphereTransform = 12288
+	else if (sphereSize16 == 0x0c)
+		sphereTransform = 16384
+	else if (sphereSize16 == 0x0b)
+		sphereTransform = 20480
+	else if (sphereSize16 == 0x0a)
+		sphereTransform = 24576
+	else if (sphereSize16 == 0x09)
+		sphereTransform = 28672
+	else if (sphereSize16 == 0x08)
+		sphereTransform = 32768
+	else if (sphereSize16 == 0x07)
+		sphereTransform = 36864
+	else if (sphereSize16 == 0x06)
+		sphereTransform = 40960
+	else if (sphereSize16 == 0x05)
+		sphereTransform = 45056
+	else if (sphereSize16 == 0x04)
+		sphereTransform = 49152
+	else if (sphereSize16 == 0x03)
+		sphereTransform = 53248
+	else if (sphereSize16 == 0x02)
+		sphereTransform = 57344
+	else if (sphereSize16 == 0x01)
+		sphereTransform = 61440
+	else
+		sphereTransform = 0x10000
+	
+	return sphereTransform
+}
+
+function u8 SpheresCostumer.Manager.getSphereSize32(u16 sphereDistance)
+{
+	u8 sphereSize32
+	
+	if (sphereDistance < 5952)
+		sphereSize32 = 0x1f
+	else if (sphereDistance < 6128)
+		sphereSize32 = 0x1e
+	else if (sphereDistance < 6304)
+		sphereSize32 = 0x1d
+	else if (sphereDistance < 6488)
+		sphereSize32 = 0x1c
+	else if (sphereDistance < 6672)
+		sphereSize32 = 0x1b
+	else if (sphereDistance < 6864)
+		sphereSize32 = 0x1a
+	else if (sphereDistance < 7056)
+		sphereSize32 = 0x19
+	else if (sphereDistance < 7264)
+		sphereSize32 = 0x18
+	else if (sphereDistance < 7472)
+		sphereSize32 = 0x17
+	else if (sphereDistance < 7704)
+		sphereSize32 = 0x16
+	else if (sphereDistance < 7936)
+		sphereSize32 = 0x15
+	else if (sphereDistance < 8392)
+		sphereSize32 = 0x14
+	else if (sphereDistance < 8448)
+		sphereSize32 = 0x13
+	else if (sphereDistance < 8925)
+		sphereSize32 = 0x12
+	else if (sphereDistance < 9003)
+		sphereSize32 = 0x11
+	else if (sphereDistance < 9317)
+		sphereSize32 = 0x10
+	else if (sphereDistance < 9632)
+		sphereSize32 = 0x0f
+	else if (sphereDistance < 10112)
+		sphereSize32 = 0x0e
+	else if (sphereDistance < 10592)
+		sphereSize32 = 0x0d
+	else if (sphereDistance < 10992)
+		sphereSize32 = 0x0c
+	else if (sphereDistance < 11392)
+		sphereSize32 = 0x0b
+	else if (sphereDistance < 12032)
+		sphereSize32 = 0x0a
+	else if (sphereDistance < 12672)
+		sphereSize32 = 0x09
+	else if (sphereDistance < 13216)
+		sphereSize32 = 0x08
+	else if (sphereDistance < 13760)
+		sphereSize32 = 0x07
+	else if (sphereDistance < 14624)
+		sphereSize32 = 0x06
+	else if (sphereDistance < 15488)
+		sphereSize32 = 0x05
+	else if (sphereDistance < 16576)
+		sphereSize32 = 0x04
+	else if (sphereDistance < 17664)
+		sphereSize32 = 0x03
+	else if (sphereDistance < 18072)
+		sphereSize32 = 0x02
+	else if (sphereDistance < 18381)
+		sphereSize32 = 0x01
+	else
+		sphereSize32 = 0x00
+	
+	return sphereSize32
+}
+
+//? Size of sphere (0x00 = largest, 0x0f = smallest)
+function u8 SpheresCostumer.Manager.getSphereSize16(u16 sphereDistance)
+{
+	u8 sphereSize16 
+	
+	if (sphereDistance < 5952)
+		sphereSize16 = 0x0f
+	else if (sphereDistance < 6304)
+		sphereSize16 = 0x0e
+	else if (sphereDistance < 6672)
+		sphereSize16 = 0x0d
+	else if (sphereDistance < 7056)
+		sphereSize16 = 0x0c
+	else if (sphereDistance < 7472)
+		sphereSize16 = 0x0b
+	else if (sphereDistance < 7936)
+		sphereSize16 = 0x0a
+	else if (sphereDistance < 8448)
+		sphereSize16 = 0x09
+	else if (sphereDistance < 9003)
+		sphereSize16 = 0x08
+	else if (sphereDistance < 9632)
+		sphereSize16 = 0x07
+	else if (sphereDistance < 10592)
+		sphereSize16 = 0x06
+	else if (sphereDistance < 11392)
+		sphereSize16 = 0x05
+	else if (sphereDistance < 12672)
+		sphereSize16 = 0x04
+	else if (sphereDistance < 13760)
+		sphereSize16 = 0x03
+	else if (sphereDistance < 15488)
+		sphereSize16 = 0x02
+	else if (sphereDistance < 17664)
+		sphereSize16 = 0x01
+	else
+		sphereSize16 = 0x00
+	
+	return sphereSize16
+}
+
+function u8 SpheresCostumer.Manager.getSphereSize16_Classic(u16 sphereDistance)
+{
+	u8 sphereSize16 
+	
+	if (sphereDistance < 0x1740)
+		sphereSize16 = 0x0f
+	else if (sphereDistance < 0x18a0)
+		sphereSize16 = 0x0e
+	else if (sphereDistance < 0x1a10)
+		sphereSize16 = 0x0d
+	else if (sphereDistance < 0x1b90)
+		sphereSize16 = 0x0c
+	else if (sphereDistance < 0x1d30)
+		sphereSize16 = 0x0b
+	else if (sphereDistance < 0x1f00)
+		sphereSize16 = 0x0a
+	else if (sphereDistance < 0x2100)
+		sphereSize16 = 0x09
+	else if (sphereDistance < 0x2330)
+		sphereSize16 = 0x08
+	else if (sphereDistance < 0x25a0)
+		sphereSize16 = 0x07
+	else if (sphereDistance < 0x2960)
+		sphereSize16 = 0x06
+	else if (sphereDistance < 0x2c80)
+		sphereSize16 = 0x05
+	else if (sphereDistance < 0x3180)
+		sphereSize16 = 0x04
+	else if (sphereDistance < 0x35c0)
+		sphereSize16 = 0x03
+	else if (sphereDistance < 0x3c80)
+		sphereSize16 = 0x02
+	else if (sphereDistance < 0x4500)
+		sphereSize16 = 0x01
+	else
+		sphereSize16 = 0x00
+	
+	return sphereSize16
+}

@@ -1,0 +1,2 @@
+// Settings
+global u8 SETTING_BS_RENDER_OPTIMIZE	// When 0x01, spheres that are behind the screen will not be rendered
