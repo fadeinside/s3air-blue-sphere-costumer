@@ -1,34 +1,17 @@
-function u64 SpheresCostumer.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
+function u64 SpheresCostumer.Manager.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
 {
 	// Use the stage number (preset stages) or algorithmic stage information to get the emerald color ID
-	u8 emeraldID
+	u8 emeraldColorID
 	if !(bluespheres.minigame_mode)
-		emeraldID = global.next_bluespheres
+		emeraldColorID = global.next_bluespheres
 	else
-		emeraldID = (u8[0xffffffa4] & 0x07)
+		emeraldColorID = (u8[0xffffffa4] & 0x07)
 	
-	// Convert the received ID to string. We can definitely skip this step and use ID instead of string in the sprite name, but string is clearer
-	u64 emeraldColor
-	if (emeraldID == 0x00)
-		emeraldColor = "green"
-	else if (emeraldID == 0x01)
-		emeraldColor = "orange"
-	else if (emeraldID == 0x02)
-		emeraldColor = "pink"
-	else if (emeraldID == 0x03)
-		emeraldColor = "blue"
-	else if (emeraldID == 0x04)
-		emeraldColor = "gray"
-	else if (emeraldID == 0x05)
-		emeraldColor = "red"
-	else if (emeraldID == 0x06)
-		emeraldColor = "cyan"
-	else if (emeraldID == 0x07)
-		emeraldColor = "yellow"
-	
-	// Determine whether di is a super emerald or not and build key
+	// Determine whether sphereID is a super emerald or not
 	u64 emeraldType = (sphereID == 0x0d) ? "super" : "chaos"
-	s64 key = stringformat("emerald_%s_%s_size_%d", emeraldType, emeraldColor, sphereSize16)
+	
+	// Build key
+	u64 key = stringformat("emerald_%s_0x%02x_size_%d", emeraldType, emeraldColorID, sphereSize16)
 	
 	// Return sprite key
 	return key

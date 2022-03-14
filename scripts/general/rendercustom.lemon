@@ -5,8 +5,20 @@ function void BlueSpheres.renderCustomGround()
 	Renderer.enableDefaultPlane(0x03, false)
 	
 	// Manually render the HUD parts of this plane (blue spheres and rings counter)
-	Renderer.setupPlane(0x00, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
-	Renderer.setupPlane(getScreenWidth() - 160, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
+	// We will draw this only if your mod does not have numbers sprites 
+	if !(Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
+	{
+		// If the Blue Counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
+		if !(Renderer.hasCustomSprite("display_hud_bluecounter"))
+			Renderer.setupPlane(0x00, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
+		else
+			Renderer.setupPlane(getScreenWidth() / 0x02 - 137, 13, 50, 14, 0x11, 0x03, 0x2f00)
+		// If the Ring Counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
+		if !(Renderer.hasCustomSprite("display_hud_ringscounter"))
+			Renderer.setupPlane(getScreenWidth() - 160, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
+		else
+			Renderer.setupPlane(getScreenWidth() / 0x02 + 87, 13, 50, 14, 0x11, 0x03, 0x2f00)
+	}
 	
 	// Render ground glow effect
 	SpheresCostumer.renderGroundHorizont()
@@ -169,12 +181,12 @@ function void SpheresCostumer.renderCustomSpheres(u16 px, u16 py, u16 renderQueu
 		key = stringformat("sphere_bumper_size_%d", sphereSize16)
 	}
 	// Ring
-	else if (sphereID == 0x04 && Renderer.hasCustomSprite(stringformat("sphere_ring_%d_size_%d", u8[0xfffffeb2], sphereSize16)))
+	else if (sphereID == 0x04 && Renderer.hasCustomSprite(stringformat("sphere_ring_%d_size_%d", static_rings.animframe, sphereSize16)))
 	{
-		key = stringformat("sphere_ring_%d_size_%d", u8[0xfffffeb2], sphereSize16)
+		key = stringformat("sphere_ring_%d_size_%d", static_rings.animframe, sphereSize16)
 	}
-	// Green sphere (Needed Sonic 3: D.A. Garden Edition mod)
-	else if ((sphereID == 0x05 || sphereID == 0x0c) && (u8[0xffffef7c] && 0x01) && Renderer.hasCustomSprite(stringformat("sphere_green_size_%d", sphereSize16)))
+	// Green sphere (0x0c when it's in a touch state) (Needed Sonic 3: D.A. Garden Edition mod)
+	else if ((sphereID == 0x05 && (u8[0xffffef7c] && 0x01)) || sphereID == 0x0c && Renderer.hasCustomSprite(stringformat("sphere_green_size_%d", sphereSize16)))
 	{
 		key = stringformat("sphere_green_size_%d", sphereSize16)
 	}
@@ -204,20 +216,57 @@ function void SpheresCostumer.renderCustomSpheres(u16 px, u16 py, u16 renderQueu
 		key = "sphere_sparkle_3"
 	}
 	// Super and Chaos emerald
-	else if ((sphereID == 0x0d || sphereID == 0x0b) && Renderer.hasCustomSprite(SpheresCostumer.getEmeraldSprite(sphereID, sphereSize16)))
+	else if ((sphereID == 0x0d || sphereID == 0x0b) && Renderer.hasCustomSprite(SpheresCostumer.Manager.getEmeraldSprite(sphereID, sphereSize16)))
 	{
-		key = SpheresCostumer.getEmeraldSprite(sphereID, sphereSize16)
+		key = SpheresCostumer.Manager.getEmeraldSprite(sphereID, sphereSize16)
 	}
 	// If the sprite does not exist, or there is no coincidence for sphereID, then try to draw the VDP sprite
 	else
 	{
+		// If the modern style is used, then add fog for the spheres that are beyond the horizon. AIR part
 		if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
 			Renderer.drawVdpSpriteWithTint(px + u16[A3+0x04], py + s8[A3], u8[A3+0x01], u16[A3+0x02] + D6.u16, renderQueue, (0xffffff - fog) + (u32(alpha) << 24), fog)
 		else
 			Renderer.drawVdpSprite(px + u16[A3+0x04], py + s8[A3], u8[A3+0x01], u16[A3+0x02] + D6.u16, renderQueue)
+			
+		// Finish the function on this
 		return
 	}
 	
 	// Draw a sprite if it exists
 	Renderer.drawCustomSprite(key, px, py, 0x00, 0x00, renderQueue, 0x00, alpha)
+}
+
+//? Render a custom Display HUD.
+function void SpheresCostumer.renderHUD(s16 px, s16 py, u16 renderQueue)
+{
+	s16 blue_counter = bluespheres.blue_remaining
+	s16 rings_counter = !(bluespheres.minigame_mode || Game.getSetting(SETTING_BS_COUNTDOWN_RINGS)) ? bluespheres.rings_collected : (bluespheres.rings_remaining >= 1000) ? 0x00 : bluespheres.rings_remaining
+	
+	SpheresCostumer.renderHUDCounter(getScreenWidth() / 0x02 - 0x70, 0x14, renderQueue, "display_hud_bluecounter", blue_counter)
+	SpheresCostumer.renderHUDCounter(getScreenWidth() / 0x02 + 0x70, 0x14, renderQueue, "display_hud_ringscounter", rings_counter)
+}
+
+//? Render substrate counter.
+function void SpheresCostumer.renderHUDCounter(s16 px, s16 py, u16 renderQueue, u64 counterKey, s16 number)
+{
+	// Draw numbers if all numbers exist
+	if (Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
+	{
+		SpheresCostumer.renderHUDNumber("display_hud_number_%d", number / 0x64, px - 0x10, py, renderQueue)
+		SpheresCostumer.renderHUDNumber("display_hud_number_%d", number / 0x0a, px, py, renderQueue)
+		SpheresCostumer.renderHUDNumber("display_hud_number_%d", number, px + 0x10, py, renderQueue)
+	}
+	
+	// Draw counter if it exists
+	if (Renderer.hasCustomSprite(counterKey))
+		Renderer.drawCustomSprite(counterKey, px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
+}
+
+//? Render of one character numbers with specified parameters.
+function void SpheresCostumer.renderHUDNumber(u64 stringMask, u16 number, u16 px, u16 py, u16 renderQueue)
+{
+	u8 digit = number % 0x0a
+	Renderer.drawCustomSprite(stringformat(stringMask, digit), px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
+	number /= 0x0a
 }
