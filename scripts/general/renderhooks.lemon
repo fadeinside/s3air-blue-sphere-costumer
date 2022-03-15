@@ -3,9 +3,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	// Display HUD
 	if (objA0.update_address == 0x008e2a)
 	{
-		if (Renderer.hasCustomSprite("display_hud_bluecounter") || Renderer.hasCustomSprite("display_hud_ringscounter"))
+		if (Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter"))
 		{
-			SpheresCostumer.renderHUD(px, py, renderQueue)
+			SpheresCostumer.renderHUD(renderQueue)
 			return true
 		}
 	}
@@ -31,7 +31,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	}
 	
 	// Perfect text (consists of two objects)
-	if ((objA0.update_address == 0x008f24 || objA0.update_address == 0x008eec) && !u8[0x8e1214])
+	if (!u8[0x8e1214] && (objA0.update_address == 0x008f24 || objA0.update_address == 0x008eec))
 	{
 		if (objA0.animation.sprite == 0x02 && Renderer.hasCustomSprite("display_text_perfect_1")) // Part 1
 		{

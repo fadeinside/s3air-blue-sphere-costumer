@@ -5,19 +5,20 @@ function void BlueSpheres.renderCustomGround()
 	Renderer.enableDefaultPlane(0x03, false)
 	
 	// Manually render the HUD parts of this plane (blue spheres and rings counter)
-	// We will draw this only if your mod does not have numbers sprites 
-	if !(Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
+	// We will draw this only if your mod does not have display HUD sprites 
+	if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter") && Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
 	{
-		// If the Blue Counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
-		if !(Renderer.hasCustomSprite("display_hud_bluecounter"))
+		// If the counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
+		if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter"))
+		{
 			Renderer.setupPlane(0x00, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
-		else
-			Renderer.setupPlane(getScreenWidth() / 0x02 - 137, 13, 50, 14, 0x11, 0x03, 0x2f00)
-		// If the Ring Counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
-		if !(Renderer.hasCustomSprite("display_hud_ringscounter"))
 			Renderer.setupPlane(getScreenWidth() - 160, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
+		}
 		else
+		{
+			Renderer.setupPlane(getScreenWidth() / 0x02 - 137, 13, 50, 14, 0x11, 0x03, 0x2f00)
 			Renderer.setupPlane(getScreenWidth() / 0x02 + 87, 13, 50, 14, 0x11, 0x03, 0x2f00)
+		}
 	}
 	
 	// Render ground glow effect
@@ -96,7 +97,7 @@ function void SpheresCostumer.renderCustomGround()
 {
 	u32 fieldColorBaseAddress = u32[0xffffe446]
 	Game.renderBlueSpheresGround(bluespheres.position.x, bluespheres.position.y, bluespheres.direction, u16[fieldColorBaseAddress], u16[fieldColorBaseAddress+0x08])
-	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x01), 0x00, 0x00, 0x00, 0x00, 0x3000)
+	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x01), 0x00, 0x00, 0x00, 0x10, 0x3000)
 	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x00), 0x00, 0x00, 0x00, 0x10, 0x3000) // With flag to draw as fully opaque (rendering optimization)
 }
 
@@ -238,13 +239,30 @@ function void SpheresCostumer.renderCustomSpheres(u16 px, u16 py, u16 renderQueu
 }
 
 //? Render a custom Display HUD.
-function void SpheresCostumer.renderHUD(s16 px, s16 py, u16 renderQueue)
+function void SpheresCostumer.renderHUD(u16 renderQueue)
+{
+	// Create variables
+	s16 px = getScreenWidth() / 0x02
+	s16 py = 0x14
+	s16 offset = 0x70
+	
+	// Call a counters
+	SpheresCostumer.renderBlueCounter(px - offset, py, renderQueue)
+	SpheresCostumer.renderRingsCounter(px + offset, py, renderQueue)
+}
+
+//? Render a custom Blue counter.
+function void SpheresCostumer.renderBlueCounter(s16 px, s16 py, u16 renderQueue)
 {
 	s16 blue_counter = bluespheres.blue_remaining
+	SpheresCostumer.renderHUDCounter(px, py, renderQueue, "display_hud_bluecounter", blue_counter)
+}
+
+//? Render a custom Rings counter.
+function void SpheresCostumer.renderRingsCounter(s16 px, s16 py, u16 renderQueue)
+{
 	s16 rings_counter = !(bluespheres.minigame_mode || Game.getSetting(SETTING_BS_COUNTDOWN_RINGS)) ? bluespheres.rings_collected : (bluespheres.rings_remaining >= 1000) ? 0x00 : bluespheres.rings_remaining
-	
-	SpheresCostumer.renderHUDCounter(getScreenWidth() / 0x02 - 0x70, 0x14, renderQueue, "display_hud_bluecounter", blue_counter)
-	SpheresCostumer.renderHUDCounter(getScreenWidth() / 0x02 + 0x70, 0x14, renderQueue, "display_hud_ringscounter", rings_counter)
+	SpheresCostumer.renderHUDCounter(px, py, renderQueue, "display_hud_ringscounter", rings_counter)
 }
 
 //? Render substrate counter.
