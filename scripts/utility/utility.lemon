@@ -1,5 +1,16 @@
-define u8 bluespheres.animation.sprite	= u8[A0 + 0x60]	// Character framerate animation
-define u8 bluespheres.animation.state	= u8[A0 + 0x63]	// The current character state (0x00 - standing, 0x01 - run, and 0x02 - jump)
+global u8 bluespheres.ring.timer	// Ring timerrate
+global u8 bluespheres.ring.framerate	// Ring framerate animation
+
+define char.animation_bs.sprite	= u8[A0 + 0x60]	// Currently shown animation sprite
+
+//@ Function taken from sonic3air_dev/scripts/standalone/enginecallbacks.lemon
+function void Init()
+{
+	assert(!Mods.isModActive("Blue Spheres Costumer - ASSETS"), "Please, disable the 'Blue Spheres Costumer - ASSETS' mod. This is included only to simplify the process of creating a mod, and is not necessary for causal use, and may cause compatibility issues.")
+	
+	// Call the base function
+	base.Init()
+}
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
 //# address-hook(0x00903e) end(0x00919e)
@@ -8,28 +19,25 @@ function void fn00903e()
 	// Call the base function
 	base.fn00903e()
 	
-	// Character state
-	bool character_idle = (objA0.animation.sprite == 0x01 && bluespheres.started_running == 0x00)
+	// Character state (Based on the original animation frame)
+	bool character_stand = (objA0.animation.sprite == 0x01 && bluespheres.started_running == 0x00)
 	bool character_walk = (objA0.animation.sprite <= 0x08 && ((bluespheres.started_running == 0x01) ? (objA0.animation.sprite >= 0x01) : (objA0.animation.sprite >= 0x02)))
 	bool character_jump = (objA0.animation.sprite <= 0x0b && objA0.animation.sprite >= 0x09)
 	
-	// First frame
-	D2 = 0x00
-	
-	// Character idle
-	if (character_idle)
+	// Character stand
+	if (character_stand)
 	{
 		// Set character state
-		bluespheres.animation.state = 0x00
-		// Set frames
-		bluespheres.animation.sprite = 0x00
+		char.state = char.state.STANDING
+		// Setup frames
+		char.animation_bs.sprite = 0x00
 	}
 	// Character walk
 	else if (character_walk)
 	{
 		// Set character state
-		bluespheres.animation.state = 0x01
-		// Set frames
+		char.state = char.state.RUNNING
+		// Setup frames
 		if (bluespheres.movement_speed != 0x00 && !(bluespheres.movement_speed < 0x00)) // If the speed of movement is not 0, and is not negative, then the speed of animations depends on the speed of movement
 			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 		else if (bluespheres.movement_speed < 0x00) // If negative, convert into positive
@@ -39,8 +47,8 @@ function void fn00903e()
 	else if (character_jump)
 	{
 		// Set character state
-		bluespheres.animation.state = 0x02
-		// Set frames
+		char.state = char.state.ROLLING
+		// Setup frames
 		if (bluespheres.movement_speed != 0x00 && !(bluespheres.movement_speed < 0x00)) // If the speed of movement is not 0, and is not negative, then the speed of animations depends on the speed of movement
 			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 		else if (bluespheres.movement_speed < 0x00) // If negative, convert into positive
@@ -49,14 +57,14 @@ function void fn00903e()
 			u16[A0 + 0x60] += 4096 >> 0x05
 	}
 	
-	D2 = bluespheres.animation.sprite
+	D2 = char.animation_bs.sprite
 	if (D2.u8 >= 0x0c)
 		D2.u8 = 0x00
 	
-	bluespheres.animation.sprite = D2.u8
+	char.animation_bs.sprite = D2.u8
 	
-	//debugLog(stringformat("Character state: 0x%02x / %d, %d, %d", bluespheres.animation.state, character_idle, character_walk, character_jump))
-	//debugLog(stringformat("Character frames: %d", bluespheres.animation.sprite))
+	//debugLog(stringformat("Character state: 0x%02x / %d, %d, %d", char.state, character_idle, character_walk, character_jump))
+	//debugLog(stringformat("Character frames: %d", char.animation_bs.sprite))
 	//debugLog(stringformat("Current movespeed: %d", bluespheres.movement_speed))
 }
 
@@ -64,56 +72,52 @@ function void fn00903e()
 //# address-hook(0x009402) end(0x009442)
 function void fn009402()
 {
-	// Character state
-	bool character_idle = (objA0.animation.sprite == 0x01 && bluespheres.started_running == 0x00)
+	// Character state (Based on the original animation frame)
+	bool character_stand = (objA0.animation.sprite == 0x01 && bluespheres.started_running == 0x00)
 	bool character_walk = (objA0.animation.sprite <= 0x08 && ((bluespheres.started_running == 0x01) ? (objA0.animation.sprite >= 0x01) : (objA0.animation.sprite >= 0x02)))
 	bool character_jump = (objA0.animation.sprite <= 0x0b && objA0.animation.sprite >= 0x09)
 	
-	// First frame
-	D2 = 0x00
-	
-	// Character idle
-	if (character_idle)
+	// Character stand
+	if (character_stand)
 	{
 		// Set character state
-		bluespheres.animation.state = 0x00
-		// Set frames
-		bluespheres.animation.sprite = 0x00
+		char.state = char.state.STANDING
+		// Setup frames
+		char.animation_bs.sprite = 0x00
 	}
 	// Character walk
 	else if (character_walk)
 	{
 		// Set character state
-		bluespheres.animation.state = 0x01
-		// Set frames
-		if (bluespheres.movement_speed != 0x00 && !(bluespheres.movement_speed < 0x00)) // If the speed of movement is not 0, and is not negative, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else if (bluespheres.movement_speed < 0x00) // If negative, convert into positive
+		char.state = char.state.RUNNING
+		// Setup frames
+		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
 			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
+			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 	}
 	// Character jump
 	else if (character_jump)
 	{
 		// Set character state
-		bluespheres.animation.state = 0x02
-		// Set frames
-		if (bluespheres.movement_speed != 0x00 && !(bluespheres.movement_speed < 0x00)) // If the speed of movement is not 0, and is not negative, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else if (bluespheres.movement_speed < 0x00) // If negative, convert into positive
+		char.state = char.state.ROLLING
+		// Setup frames
+		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
 			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
+			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 		else // Otherwise use the speed set
 			u16[A0 + 0x60] += 4096 >> 0x05
 	}
 	
-	D2 = bluespheres.animation.sprite
+	D2 = char.animation_bs.sprite
 	if (D2.u8 >= 0x0c)
 		D2.u8 = 0x00
 	
-	bluespheres.animation.sprite = D2.u8
+	char.animation_bs.sprite = D2.u8
 	
-	//debugLog(stringformat("Character state: 0x%02x / %d, %d, %d", bluespheres.animation.state, character_idle, character_walk, character_jump))
-	//debugLog(stringformat("Character frames: %d", bluespheres.animation.sprite))
-	//debugLog(stringformat("Current movespeed: %d", bluespheres.movement_speed))
+	//debugLog(stringformat("Character state: 0x%02x / %d, %d, %d", char.state, character_idle, character_walk, character_jump))
+	//debugLog(stringformat("Character frames: %d", char.animation_bs.sprite))
 	
 	// Call the base function
 	base.fn009402()
@@ -126,25 +130,23 @@ function void fn009488()
 	// Call the base function
 	base.fn009488()
 	
-	// First frame
-	D2 = 0x00
-	
-	// Set frames
-	if (bluespheres.movement_speed != 0x00 && !(bluespheres.movement_speed < 0x00)) // If the speed of movement is not 0, and is not negative, then the speed of animations depends on the speed of movement
+	// Setup frames
+	if (bluespheres.movement_speed == 2048) // If you have collected all the spheres, then use the initial speed
+		u16[A0 + 0x60] += (4096 - (4096 >> 0x02)) >> 0x05
+	else if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
+		u16[A0 + 0x60] += 0x00 - ((bluespheres.movement_speed - (bluespheres.movement_speed >> 0x02)) >> 0x05) 
+	else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
 		u16[A0 + 0x60] += (bluespheres.movement_speed - (bluespheres.movement_speed >> 0x02)) >> 0x05
-	else if (bluespheres.movement_speed < 0x00) // If negative, convert into positive
-		u16[A0 + 0x60] += 0x00 - ((bluespheres.movement_speed - (bluespheres.movement_speed >> 0x02)) >> 0x05)
-	else // Otherwise use the speed set
+	else // Otherwise use the initial speed
 		u16[A0 + 0x60] += (4096 - (4096 >> 0x02)) >> 0x05
 	
-	D2 = bluespheres.animation.sprite
+	D2 = char.animation_bs.sprite
 	if (D2.u8 >= 0x15)
 		D2.u8 = 0x00
 	
-	bluespheres.animation.sprite = D2.u8
+	char.animation_bs.sprite = D2.u8
 	
-	//debugLog(stringformat("Character frames: %d", bluespheres.animation.sprite))
-	//debugLog(stringformat("Current movespeed: %d", bluespheres.movement_speed))
+	//debugLog(stringformat("Character frames: %d", char.animation_bs.sprite))
 	//debugLog(stringformat("Faded movespeed: %d", bluespheres.movement_speed >> 0x02))
 }
 
@@ -157,19 +159,38 @@ function void fn008faa()
 }
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
+//# address-hook(0x009212) end(0x009274)
+function void fn009212()
+{
+	base.fn009212() // Call the base function
+	objA0.value32 += getScreenHeight() - 224
+}
+
+//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
+//# address-hook(0x009444) end(0x009482)
+function void fn009444()
+{
+	base.fn009444() // Call the base function
+	objA0.value32 += getScreenHeight() - 224
+}
+
+//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
 //# address-hook(0x00972e) end(0x0098ae)
 function void fn00972e()
 {
+	// Determine which sphere is in front of us
 	A1 = 0xfffff100
-	D0.u16 = ((bluespheres.position.x + 0x80) >> 8) & 0x1f
-	D1.u16 = ((bluespheres.position.y + 0x80) >> 8) & 0x1f
-	D1.u16 <<= 5
+	D0.u16 = ((bluespheres.position.x + 0x80) >> 0x08) & 0x1f
+	D1.u16 = ((bluespheres.position.y + 0x80) >> 0x08) & 0x1f
+	D1.u16 <<= 0x05
 	D1.u8 |= D0.u8
 	A1 += D1.s16
 	D2.u8 = u8[A1]
 	
-	if (D2.u8 == 4)
+	// Ring sphere
+	if (D2.u8 == 0x04)
 	{
+		// Check if you are inside the ring now, then collect it. Like a Sonic Mania
 		D0.u16 = (bluespheres.position.x | bluespheres.position.y) & 0xe0
 		if (D0.u16 == 0x00)
 		{
@@ -177,9 +198,26 @@ function void fn00972e()
 			base.fn00972e()
 		}
 	}
+	// If it's not a ring, then call the base function for compatibility with other mods that make changes here
 	else
 	{
 		// Call the base function
 		base.fn00972e()
 	}
+}
+
+//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
+//# address-hook(0x009d9e) end(0x009dc8)
+function void fn009d9e()
+{
+	// Setup
+	++bluespheres.ring.timer
+	if (bluespheres.ring.timer >= 0x1e)
+		bluespheres.ring.timer = 0x00
+	
+	bluespheres.ring.framerate = bluespheres.ring.timer >> 0x01
+	//debugLog(stringformat("Ring framerate: %d", bluespheres.ring.framerate))
+	
+	// Call the base function
+	base.fn009d9e()
 }

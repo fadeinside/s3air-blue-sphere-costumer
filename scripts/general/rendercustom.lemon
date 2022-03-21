@@ -1,34 +1,4 @@
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
-function void BlueSpheres.renderCustomGround()
-{
-	// Disable rendering of plane B prio
-	Renderer.enableDefaultPlane(0x03, false)
-	
-	// Manually render the HUD parts of this plane (blue spheres and rings counter)
-	// We will draw this only if your mod does not have display HUD sprites
-	if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter") && Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
-	{
-		// If the counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
-		if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter"))
-		{
-			Renderer.setupPlane(0x00, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
-			Renderer.setupPlane(getScreenWidth() - 160, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
-		}
-		else
-		{
-			Renderer.setupPlane(getScreenWidth() / 0x02 - 137, 13, 50, 14, 0x11, 0x03, 0x2f00)
-			Renderer.setupPlane(getScreenWidth() / 0x02 + 87, 13, 50, 14, 0x11, 0x03, 0x2f00)
-		}
-	}
-	
-	// Render ground glow effect
-	SpheresCostumer.renderGroundHorizont()
-	
-	// Render our own version of the ground
-	SpheresCostumer.renderCustomGround()
-}
-
-//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
 function void BlueSpheres.renderCustomCharacterShadows()
 {
 	// Setup variables
@@ -131,12 +101,42 @@ function void SpheresCostumer.renderGroundHorizont()
 	}
 }
 
+//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
+function void BlueSpheres.renderCustomGround()
+{
+	// Disable rendering of plane B prio
+	Renderer.enableDefaultPlane(0x03, false)
+	
+	// Manually render the HUD parts of this plane (blue spheres and rings counter)
+	// We will draw this only if your mod does not have display HUD sprites
+	if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter") && Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
+	{
+		// If the counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
+		if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter"))
+		{
+			Renderer.setupPlane(0x00, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
+			Renderer.setupPlane(getScreenWidth() - 160, 0x00, 160, 32, 0x11, 0x03, 0x2f00)
+		}
+		else
+		{
+			Renderer.setupPlane(getScreenWidth() / 0x02 - 137, 13, 50, 14, 0x11, 0x03, 0x2f00)
+			Renderer.setupPlane(getScreenWidth() / 0x02 + 87, 13, 50, 14, 0x11, 0x03, 0x2f00)
+		}
+	}
+	
+	// Render ground glow effect
+	SpheresCostumer.renderGroundHorizont()
+	
+	// Render our own version of the ground
+	SpheresCostumer.renderCustomGround()
+}
+
 //? Draw a custom ground.
 function void SpheresCostumer.renderCustomGround()
 {
 	u32 fieldColorBaseAddress = u32[0xffffe446]
 	Game.renderBlueSpheresGround(bluespheres.position.x, bluespheres.position.y, bluespheres.direction, u16[fieldColorBaseAddress], u16[fieldColorBaseAddress+0x08])
-	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x01), 0x00, 0x00, 0x00, 0x10, 0x3000)
+	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x01), 0x00, 0x00, 0x00, 0x00, 0x3000)
 	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x00), 0x00, 0x00, 0x00, 0x10, 0x3000) // With flag to draw as fully opaque (rendering optimization)
 }
 
