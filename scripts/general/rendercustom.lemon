@@ -17,7 +17,7 @@ function void BlueSpheres.renderCustomCharacterShadows()
 		// Else draw the original AIR sprite
 		else
 		{
-			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_smooth" : "bluespheres_shadow_2P_smooth", 0x8F + getScreenExtend(), py, 0x00, 0x00, 0x3100)
+			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_smooth" : "bluespheres_shadow_2P_smooth", 143 + getScreenExtend(), py, 0x00, 0x00, 0x3100)
 		}
 	}
 	// Sharped character shadow
@@ -31,7 +31,7 @@ function void BlueSpheres.renderCustomCharacterShadows()
 		// Else draw the original AIR sprite
 		else
 		{
-			Renderer.drawCustomSprite(getNumPlayers() < 2 ? "bluespheres_shadow_1P_pixel" : "bluespheres_shadow_2P_pixel", 142 + getScreenExtend(), py, 0x00, 0, 0x3100)
+			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_pixel" : "bluespheres_shadow_2P_pixel", 143 + getScreenExtend(), py, 0x00, 0x00, 0x3100)
 		}
 	}
 }
@@ -135,6 +135,7 @@ function void BlueSpheres.renderCustomGround()
 function void SpheresCostumer.renderCustomGround()
 {
 	u32 fieldColorBaseAddress = u32[0xffffe446]
+	debugLog(stringformat("0x%04x",u16[fieldColorBaseAddress]))
 	Game.renderBlueSpheresGround(bluespheres.position.x, bluespheres.position.y, bluespheres.direction, u16[fieldColorBaseAddress], u16[fieldColorBaseAddress+0x08])
 	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x01), 0x00, 0x00, 0x00, 0x00, 0x3000)
 	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x00), 0x00, 0x00, 0x00, 0x10, 0x3000) // With flag to draw as fully opaque (rendering optimization)

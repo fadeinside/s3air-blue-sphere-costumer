@@ -1,8 +1,5 @@
 define char.animation_bs.sprite	= u8[A0 + 0x60]	// Currently shown animation sprite
 
-global u8 bluespheres.ring.timer	// Ring timerrate
-global u8 bluespheres.ring.framerate	// Ring framerate animation
-
 //@ Function taken from sonic3air_dev/scripts/standalone/enginecallbacks.lemon
 function void Init()
 {
@@ -13,11 +10,11 @@ function void Init()
 	base.Init()
 }
 
-//? Устанавливает статус главного персонажа и кадры анимации для расширенного фреймрейта.
+//? Sets the state of the main character and animation frames for the extended framerate.
 function void BlueSphereCostumer.fn2da449()
 {
 	// Character standing
-	if !(bluespheres.started_running)
+	if (!bluespheres.started_running && u8[0xffffe432] == 0x00)
 	{
 		// Set character state
 		char.state = char.state.STANDING
@@ -27,41 +24,41 @@ function void BlueSphereCostumer.fn2da449()
 	}
 	
 	// Character running
-	if (bluespheres.started_running)
+	if (bluespheres.started_running && u8[0xffffe432] == 0x00)
 	{
 		// Set character state
 		char.state = char.state.RUNNING
 		
 		// Setup frames
 		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+			u16[A0 + 0x60] += (0x00 - bluespheres.movement_speed) >> 0x05
 		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
 			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 	}
 	
 	// Character jump
-	if (u8[0xffffe432] & 0x80)
+	if (u8[0xffffe432] != 0x00)
 	{
 		// Set character state
 		char.state = char.state.ROLLING
 		
 		// Setup frames
 		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+			u16[A0 + 0x60] += (0x00 - bluespheres.movement_speed) >> 0x05
 		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
 			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else // Otherwise use the speed set
-			u16[A0 + 0x60] += 4096 >> 0x05
+		else // Otherwise use the initial speed
+			u16[A0 + 0x60] += 0x1000 >> 0x05
 	}
 	
 	BlueSphereCostumer.fn2da450()
 }
 
-//? Устанавливает статус второго персонажа и кадры анимации для расширенного фреймрейта.
+//? Sets the state of the second character and the animation frames for the extended framerate.
 function void BlueSphereCostumer.fncc4253()
 {
 	// Character standing
-	if !(bluespheres.started_running)
+	if (!bluespheres.started_running && u8[0xffffe440] == 0x00)
 	{
 		// Set character state
 		char.state = char.state.STANDING
@@ -71,7 +68,7 @@ function void BlueSphereCostumer.fncc4253()
 	}
 	
 	// Character running
-	if (bluespheres.started_running)
+	if (bluespheres.started_running && u8[0xffffe440] == 0x00)
 	{
 		// Set character state
 		char.state = char.state.RUNNING
@@ -95,13 +92,13 @@ function void BlueSphereCostumer.fncc4253()
 		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
 			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 		else // Otherwise use the speed set
-			u16[A0 + 0x60] += 4096 >> 0x05
+			u16[A0 + 0x60] += 0x1000 >> 0x05
 	}
 	
 	BlueSphereCostumer.fn2da450()
 }
 
-//? Устанавливает лимит по количеству кадров анимаций для расширенного фреймрейта персонажей.
+//? Sets an animation frame limit for the extended character framerate.
 function void BlueSphereCostumer.fn2da450()
 {
 	D0 = char.animation_bs.sprite
@@ -109,32 +106,42 @@ function void BlueSphereCostumer.fn2da450()
 		D0.u8 = 0x00
 	
 	char.animation_bs.sprite = D0.u8
+	
+	//debugLog(stringformat("Character state: 0x%02x", char.state))
+	//debugLog(stringformat("Character frames: %d", char.animation_bs.sprite))
+	//debugLog(stringformat("Current movespeed: %d", bluespheres.movement_speed))
 }
 
-//? Устанавливает кадры анимации для расширенного фреймрейта хвоста второго персонажа.
+//? Sets the animation frames for the extended tail frame of the second character.
 function void BlueSphereCostumer.fn8abca6()
 {
+	// Variables
+	u16 bluespheres.faded_speed = (bluespheres.current_gamespeed >> 0x02)
+	
 	// Setup frames
 	if (bluespheres.movement_speed == 2048) // If you have collected all the spheres, then use the initial speed
-		u16[A0 + 0x60] += (4096 - (4096 >> 0x02)) >> 0x05
+		u16[A0 + 0x60] += (0x1000 - (0x1000 >> 0x02)) >> 0x05
 	else if (bluespheres.current_gamespeed < 0x00) // If the speed of movement is negative, convert into positive
-		u16[A0 + 0x60] += 0x00 - ((bluespheres.current_gamespeed - (bluespheres.current_gamespeed >> 0x02)) >> 0x05) 
+		u16[A0 + 0x60] += (0x00 - (bluespheres.current_gamespeed - bluespheres.faded_speed)) >> 0x05
 	else if (bluespheres.current_gamespeed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-		u16[A0 + 0x60] += (bluespheres.current_gamespeed - (bluespheres.current_gamespeed >> 0x02)) >> 0x05
+		u16[A0 + 0x60] += (bluespheres.current_gamespeed - bluespheres.faded_speed) >> 0x05
 	else // Otherwise use the initial speed
-		u16[A0 + 0x60] += (4096 - (4096 >> 0x02)) >> 0x05
+		u16[A0 + 0x60] += (0x1000 - (0x1000 >> 0x02)) >> 0x05
 		
 	BlueSphereCostumer.fn8abca7()
 }
 
-//? Устанавливает лимит по количеству кадров анимаций для расширенного фреймрейта хвоста второго персонажа.
+//? Sets an animation frame limit for the extended tail frame of the second character.
 function void BlueSphereCostumer.fn8abca7()
 {
 	D0 = char.animation_bs.sprite
 	if (D0.u8 >= 0x15)
 		D0.u8 = 0x00
 	
-	char.animation_bs.sprite = D0.u8 
+	char.animation_bs.sprite = D0.u8
+	
+	//debugLog(stringformat("Tails frames: %d", char.animation_bs.sprite))
+	//debugLog(stringformat("Faded speed: %d", bluespheres.current_gamespeed >> 0x02))
 }
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
@@ -165,7 +172,7 @@ function void fn009488()
 	
 	// Call the base function
 	base.fn009488()
-} 
+}
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
 //# address-hook(0x008faa) end(0x009038)
@@ -187,6 +194,13 @@ function void fn009212()
 //# address-hook(0x009444) end(0x009482)
 function void fn009444()
 {
+	// Unload the Tails object of the character if it's not Miles
+	if ((getMainCharacter() || getSecondCharacter()) != CHARACTER_TAILS)
+	{
+		UnloadObject()
+		return
+	}
+	
 	base.fn009444() // Call the base function
 	objA0.value32 += getScreenHeight() - 224
 }
@@ -221,20 +235,4 @@ function void fn00972e()
 		// Call the base function
 		base.fn00972e()
 	}
-}
-
-//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
-//# address-hook(0x009d9e) end(0x009dc8)
-function void fn009d9e()
-{
-	// Setup
-	++bluespheres.ring.timer
-	if (bluespheres.ring.timer >= 0x1e)
-		bluespheres.ring.timer = 0x00
-	
-	bluespheres.ring.framerate = bluespheres.ring.timer >> 0x01
-	//debugLog(stringformat("Ring framerate: %d", bluespheres.ring.framerate))
-	
-	// Call the base function
-	base.fn009d9e()
 }
