@@ -75,7 +75,7 @@ function void BlueSphereCostumer.fncc4253()
 		
 		// Setup frames
 		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+			u16[A0 + 0x60] += (0x00 - bluespheres.movement_speed) >> 0x05
 		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
 			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 	}
@@ -88,10 +88,10 @@ function void BlueSphereCostumer.fncc4253()
 		
 		// Setup frames
 		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+			u16[A0 + 0x60] += (0x00 - bluespheres.movement_speed) >> 0x05
 		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
 			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else // Otherwise use the speed set
+		else // Otherwise use the initial speed
 			u16[A0 + 0x60] += 0x1000 >> 0x05
 	}
 	

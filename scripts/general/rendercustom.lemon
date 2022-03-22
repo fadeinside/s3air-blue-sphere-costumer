@@ -135,7 +135,6 @@ function void BlueSpheres.renderCustomGround()
 function void SpheresCostumer.renderCustomGround()
 {
 	u32 fieldColorBaseAddress = u32[0xffffe446]
-	debugLog(stringformat("0x%04x",u16[fieldColorBaseAddress]))
 	Game.renderBlueSpheresGround(bluespheres.position.x, bluespheres.position.y, bluespheres.direction, u16[fieldColorBaseAddress], u16[fieldColorBaseAddress+0x08])
 	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x01), 0x00, 0x00, 0x00, 0x00, 0x3000)
 	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x00), 0x00, 0x00, 0x00, 0x10, 0x3000) // With flag to draw as fully opaque (rendering optimization)

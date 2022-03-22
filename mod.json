@@ -15,7 +15,7 @@
 			{
 				"Category": "General",
 				"InternalName": "SETTING_BS_RENDER_OPTIMIZE",
-				"DisplayName": "Optimize of the spheres render:",
+				"DisplayName": "Optimize spheres render:",
 				"Variable": "SETTING_BS_RENDER_OPTIMIZE",
 				"DefaultValue": "0",
 				"Options":
