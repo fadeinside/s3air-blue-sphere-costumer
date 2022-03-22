@@ -1,123 +1,157 @@
+define char.animation_bs.sprite	= u8[A0 + 0x60]	// Currently shown animation sprite
+
 global u8 bluespheres.ring.timer	// Ring timerrate
 global u8 bluespheres.ring.framerate	// Ring framerate animation
-
-define char.animation_bs.sprite	= u8[A0 + 0x60]	// Currently shown animation sprite
 
 //@ Function taken from sonic3air_dev/scripts/standalone/enginecallbacks.lemon
 function void Init()
 {
+	// We will show a warning about the need to disable the ASSETS mod if it is active
 	assert(!Mods.isModActive("Blue Spheres Costumer - ASSETS"), "Please, disable the 'Blue Spheres Costumer - ASSETS' mod. This is included only to simplify the process of creating a mod, and is not necessary for causal use, and may cause compatibility issues.")
 	
 	// Call the base function
 	base.Init()
 }
 
-//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
-//# address-hook(0x00903e) end(0x00919e)
-function void fn00903e()
+//? Устанавливает статус главного персонажа и кадры анимации для расширенного фреймрейта.
+function void BlueSphereCostumer.fn2da449()
 {
-	// Call the base function
-	base.fn00903e()
-	
-	// Character state (Based on the original animation frame)
-	bool character_stand = (objA0.animation.sprite == 0x01 && bluespheres.started_running == 0x00)
-	bool character_walk = (objA0.animation.sprite <= 0x08 && ((bluespheres.started_running == 0x01) ? (objA0.animation.sprite >= 0x01) : (objA0.animation.sprite >= 0x02)))
-	bool character_jump = (objA0.animation.sprite <= 0x0b && objA0.animation.sprite >= 0x09)
-	
-	// Character stand
-	if (character_stand)
+	// Character standing
+	if !(bluespheres.started_running)
 	{
 		// Set character state
 		char.state = char.state.STANDING
+		
 		// Setup frames
 		char.animation_bs.sprite = 0x00
 	}
-	// Character walk
-	else if (character_walk)
+	
+	// Character running
+	if (bluespheres.started_running)
 	{
 		// Set character state
 		char.state = char.state.RUNNING
+		
 		// Setup frames
-		if (bluespheres.movement_speed != 0x00 && !(bluespheres.movement_speed < 0x00)) // If the speed of movement is not 0, and is not negative, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else if (bluespheres.movement_speed < 0x00) // If negative, convert into positive
+		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
 			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
+			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 	}
+	
 	// Character jump
-	else if (character_jump)
+	if (u8[0xffffe432] & 0x80)
 	{
 		// Set character state
 		char.state = char.state.ROLLING
+		
 		// Setup frames
-		if (bluespheres.movement_speed != 0x00 && !(bluespheres.movement_speed < 0x00)) // If the speed of movement is not 0, and is not negative, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else if (bluespheres.movement_speed < 0x00) // If negative, convert into positive
+		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
 			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
+			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
 		else // Otherwise use the speed set
 			u16[A0 + 0x60] += 4096 >> 0x05
 	}
 	
-	D2 = char.animation_bs.sprite
-	if (D2.u8 >= 0x0c)
-		D2.u8 = 0x00
+	BlueSphereCostumer.fn2da450()
+}
+
+//? Устанавливает статус второго персонажа и кадры анимации для расширенного фреймрейта.
+function void BlueSphereCostumer.fncc4253()
+{
+	// Character standing
+	if !(bluespheres.started_running)
+	{
+		// Set character state
+		char.state = char.state.STANDING
+		
+		// Setup frames
+		char.animation_bs.sprite = 0x00
+	}
 	
-	char.animation_bs.sprite = D2.u8
+	// Character running
+	if (bluespheres.started_running)
+	{
+		// Set character state
+		char.state = char.state.RUNNING
+		
+		// Setup frames
+		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
+			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
+			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
+	}
 	
-	//debugLog(stringformat("Character state: 0x%02x / %d, %d, %d", char.state, character_idle, character_walk, character_jump))
-	//debugLog(stringformat("Character frames: %d", char.animation_bs.sprite))
-	//debugLog(stringformat("Current movespeed: %d", bluespheres.movement_speed))
+	// Character jump
+	if (u8[0xffffe440] != 0x00)
+	{
+		// Set character state
+		char.state = char.state.ROLLING
+		
+		// Setup frames
+		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
+			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
+		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
+			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
+		else // Otherwise use the speed set
+			u16[A0 + 0x60] += 4096 >> 0x05
+	}
+	
+	BlueSphereCostumer.fn2da450()
+}
+
+//? Устанавливает лимит по количеству кадров анимаций для расширенного фреймрейта персонажей.
+function void BlueSphereCostumer.fn2da450()
+{
+	D0 = char.animation_bs.sprite
+	if (D0.u8 >= 0x0c)
+		D0.u8 = 0x00
+	
+	char.animation_bs.sprite = D0.u8
+}
+
+//? Устанавливает кадры анимации для расширенного фреймрейта хвоста второго персонажа.
+function void BlueSphereCostumer.fn8abca6()
+{
+	// Setup frames
+	if (bluespheres.movement_speed == 2048) // If you have collected all the spheres, then use the initial speed
+		u16[A0 + 0x60] += (4096 - (4096 >> 0x02)) >> 0x05
+	else if (bluespheres.current_gamespeed < 0x00) // If the speed of movement is negative, convert into positive
+		u16[A0 + 0x60] += 0x00 - ((bluespheres.current_gamespeed - (bluespheres.current_gamespeed >> 0x02)) >> 0x05) 
+	else if (bluespheres.current_gamespeed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
+		u16[A0 + 0x60] += (bluespheres.current_gamespeed - (bluespheres.current_gamespeed >> 0x02)) >> 0x05
+	else // Otherwise use the initial speed
+		u16[A0 + 0x60] += (4096 - (4096 >> 0x02)) >> 0x05
+		
+	BlueSphereCostumer.fn8abca7()
+}
+
+//? Устанавливает лимит по количеству кадров анимаций для расширенного фреймрейта хвоста второго персонажа.
+function void BlueSphereCostumer.fn8abca7()
+{
+	D0 = char.animation_bs.sprite
+	if (D0.u8 >= 0x15)
+		D0.u8 = 0x00
+	
+	char.animation_bs.sprite = D0.u8 
+}
+
+//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
+//# address-hook(0x00903e) end(0x00919e)
+function void fn00903e()
+{
+	BlueSphereCostumer.fn2da449()
+	
+	// Call the base function
+	base.fn00903e()
 }
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
 //# address-hook(0x009402) end(0x009442)
 function void fn009402()
 {
-	// Character state (Based on the original animation frame)
-	bool character_stand = (objA0.animation.sprite == 0x01 && bluespheres.started_running == 0x00)
-	bool character_walk = (objA0.animation.sprite <= 0x08 && ((bluespheres.started_running == 0x01) ? (objA0.animation.sprite >= 0x01) : (objA0.animation.sprite >= 0x02)))
-	bool character_jump = (objA0.animation.sprite <= 0x0b && objA0.animation.sprite >= 0x09)
-	
-	// Character stand
-	if (character_stand)
-	{
-		// Set character state
-		char.state = char.state.STANDING
-		// Setup frames
-		char.animation_bs.sprite = 0x00
-	}
-	// Character walk
-	else if (character_walk)
-	{
-		// Set character state
-		char.state = char.state.RUNNING
-		// Setup frames
-		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
-		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-	}
-	// Character jump
-	else if (character_jump)
-	{
-		// Set character state
-		char.state = char.state.ROLLING
-		// Setup frames
-		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += 0x00 - (bluespheres.movement_speed >> 0x05)
-		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else // Otherwise use the speed set
-			u16[A0 + 0x60] += 4096 >> 0x05
-	}
-	
-	D2 = char.animation_bs.sprite
-	if (D2.u8 >= 0x0c)
-		D2.u8 = 0x00
-	
-	char.animation_bs.sprite = D2.u8
-	
-	//debugLog(stringformat("Character state: 0x%02x / %d, %d, %d", char.state, character_idle, character_walk, character_jump))
-	//debugLog(stringformat("Character frames: %d", char.animation_bs.sprite))
+	BlueSphereCostumer.fncc4253()
 	
 	// Call the base function
 	base.fn009402()
@@ -127,28 +161,11 @@ function void fn009402()
 //# address-hook(0x009488) end(0x0094d2)
 function void fn009488()
 {
+	BlueSphereCostumer.fn8abca6()
+	
 	// Call the base function
 	base.fn009488()
-	
-	// Setup frames
-	if (bluespheres.movement_speed == 2048) // If you have collected all the spheres, then use the initial speed
-		u16[A0 + 0x60] += (4096 - (4096 >> 0x02)) >> 0x05
-	else if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-		u16[A0 + 0x60] += 0x00 - ((bluespheres.movement_speed - (bluespheres.movement_speed >> 0x02)) >> 0x05) 
-	else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-		u16[A0 + 0x60] += (bluespheres.movement_speed - (bluespheres.movement_speed >> 0x02)) >> 0x05
-	else // Otherwise use the initial speed
-		u16[A0 + 0x60] += (4096 - (4096 >> 0x02)) >> 0x05
-	
-	D2 = char.animation_bs.sprite
-	if (D2.u8 >= 0x15)
-		D2.u8 = 0x00
-	
-	char.animation_bs.sprite = D2.u8
-	
-	//debugLog(stringformat("Character frames: %d", char.animation_bs.sprite))
-	//debugLog(stringformat("Faded movespeed: %d", bluespheres.movement_speed >> 0x02))
-}
+} 
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
 //# address-hook(0x008faa) end(0x009038)
