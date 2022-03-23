@@ -1,15 +1,8 @@
 //? Returns the emerald sprite key.
-function u64 SpheresCostumer.Manager.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
+function u64 SpheresCostumer.Manager.getEmeraldSprite(u8 sphereID, u8 emeraldColorID, u8 sphereSize16)
 {
-	// Use the stage number (preset stages) or algorithmic stage information to get the emerald color ID
-	u8 emeraldColorID
-	if !(bluespheres.minigame_mode)
-		emeraldColorID = global.next_bluespheres
-	else
-		emeraldColorID = (u8[0xffffffa4] & 0x07)
-	
-	// Determine whether sphereID is a super emerald or not
-	u64 emeraldType = (sphereID == 0x0d) ? "super" : "chaos"
+	// Determine whether sphereID is a chaos emerald or not
+	u64 emeraldType = (sphereID == 0x0b) ? "chaos" : "super"
 	
 	// Build key
 	u64 key = stringformat("emerald_%s_0x%02x_size_%d", emeraldType, emeraldColorID, sphereSize16)

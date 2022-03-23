@@ -255,10 +255,20 @@ function void SpheresCostumer.renderCustomSpheres(u16 px, u16 py, u16 renderQueu
 	{
 		key = "sphere_sparkle_3"
 	}
-	// Super and Chaos emerald
-	else if ((sphereID == 0x0d || sphereID == 0x0b) && Renderer.hasCustomSprite(SpheresCostumer.Manager.getEmeraldSprite(sphereID, sphereSize16)))
+	// Chaos and Super emerald
+	else if (sphereID == 0x0b || sphereID == 0x0d)
 	{
-		key = SpheresCostumer.Manager.getEmeraldSprite(sphereID, sphereSize16)
+		// Use the stage number (preset stages) or algorithmic stage information to get the emerald color ID
+		u8 emeraldColorID
+		if !(bluespheres.minigame_mode)
+			emeraldColorID = global.next_bluespheres
+		else
+			emeraldColorID = (u8[0xffffffa4] & 0x07)
+		
+		if (Renderer.hasCustomSprite(SpheresCostumer.Manager.getEmeraldSprite(sphereID, emeraldColorID, sphereSize16)))
+		{
+			key = SpheresCostumer.Manager.getEmeraldSprite(sphereID, emeraldColorID, sphereSize16)
+		}
 	}
 	// If the sprite does not exist, or there is no coincidence for sphereID, then try to draw the VDP sprite
 	else

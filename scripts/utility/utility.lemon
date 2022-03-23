@@ -141,7 +141,7 @@ function void BlueSphereCostumer.fn8abca7()
 	char.animation_bs.sprite = D0.u8
 	
 	//debugLog(stringformat("Tails frames: %d", char.animation_bs.sprite))
-	//debugLog(stringformat("Faded speed: %d", bluespheres.current_gamespeed >> 0x02))
+	//debugLog(stringformat("Faded gamespeed: %d", bluespheres.current_gamespeed >> 0x02))
 }
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
