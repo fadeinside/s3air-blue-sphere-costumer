@@ -14,7 +14,7 @@ function void Init()
 function void SpheresModSupport.fn2da449()
 {
 	// Character standing
-	if (!bluespheres.started_running && u8[0xffffe432] == 0x00)
+	if (!bluespheres.started_running && !(u8[0xffffe432] & 0x80))
 	{
 		// Set character state
 		char.state = char.state.STANDING
@@ -24,7 +24,7 @@ function void SpheresModSupport.fn2da449()
 	}
 	
 	// Character running
-	if (bluespheres.started_running && u8[0xffffe432] == 0x00)
+	if (bluespheres.started_running && !(u8[0xffffe432] & 0x80))
 	{
 		// Set character state
 		char.state = char.state.RUNNING
@@ -37,7 +37,7 @@ function void SpheresModSupport.fn2da449()
 	}
 	
 	// Character jump
-	if (u8[0xffffe432] != 0x00)
+	if (u8[0xffffe432] & 0x80)
 	{
 		// Set character state
 		char.state = char.state.ROLLING
@@ -58,7 +58,7 @@ function void SpheresModSupport.fn2da449()
 function void SpheresModSupport.fncc4253()
 {
 	// Character standing
-	if (!bluespheres.started_running && u8[0xffffe440] == 0x00)
+	if (!bluespheres.started_running && !(u8[0xffffe440] & 0x80))
 	{
 		// Set character state
 		char.state = char.state.STANDING
@@ -68,7 +68,7 @@ function void SpheresModSupport.fncc4253()
 	}
 	
 	// Character running
-	if (bluespheres.started_running && u8[0xffffe440] == 0x00)
+	if (bluespheres.started_running && !(u8[0xffffe440] & 0x80))
 	{
 		// Set character state
 		char.state = char.state.RUNNING
@@ -81,7 +81,7 @@ function void SpheresModSupport.fncc4253()
 	}
 	
 	// Character jump
-	if (u8[0xffffe440] != 0x00)
+	if (u8[0xffffe440] & 0x80)
 	{
 		// Set character state
 		char.state = char.state.ROLLING
