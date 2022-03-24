@@ -1,10 +1,10 @@
 {
 	"Metadata":
 	{
-		"Name": "Blue Spheres Costumer",
+		"Name": "Blue Spheres Sprite Mod Support",
 		"Author": "FadeInside" ,
-		"Description": "",
-		"URL": "",
+		"Description": "Adds support for sprite modding related to gameplay elements of Special Stages Blue Spheres, and also makes a few minor improvements.\nEnable this mod to run other sprite mods.",
+		"URL": "https://gamebanana.com/members/2008527",
 		"ModVersion": "1.0.0",
 		"GameVersion": "21.09.28.0"
 	},

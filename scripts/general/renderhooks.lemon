@@ -5,7 +5,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		if (Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter"))
 		{
-			SpheresCostumer.renderHUD(renderQueue)
+			SpheresModSupport.renderHUD(renderQueue)
 			return true
 		}
 	}

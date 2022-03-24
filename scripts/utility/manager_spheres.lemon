@@ -1,5 +1,5 @@
 //? Returns the emerald sprite key.
-function u64 SpheresCostumer.Manager.getEmeraldSprite(u8 sphereID, u8 emeraldColorID, u8 sphereSize16)
+function u64 SpheresModSupport.Manager.getEmeraldSprite(u8 sphereID, u8 emeraldColorID, u8 sphereSize16)
 {
 	// Determine whether sphereID is a chaos emerald or not
 	u64 emeraldType = (sphereID == 0x0b) ? "chaos" : "super"
@@ -12,7 +12,7 @@ function u64 SpheresCostumer.Manager.getEmeraldSprite(u8 sphereID, u8 emeraldCol
 }
 
 //? Returns the sphere transformation, depending on its size. (The method of using 32 frames is smoother, but visually does not correspond to the perspective of the ground. It is recommended to use the 16 frames method). Used to transform the sphere size, depending on its size on the ground, as an example, the rings in Blue Spheres stages from Mania uses something similar.
-function u32 SpheresCostumer.Manager.get2DTransformSize32(u8 sphereSize32)
+function u32 SpheresModSupport.Manager.get2DTransformSize32(u8 sphereSize32)
 {
 	u32 sphereTransform
 
@@ -85,7 +85,7 @@ function u32 SpheresCostumer.Manager.get2DTransformSize32(u8 sphereSize32)
 }
 
 //? Returns the sphere transformation, depending on its size. Used to transform the sphere size, depending on its size on the ground, as an example, the rings in Blue Spheres stages from Mania uses something similar.
-function u32 SpheresCostumer.Manager.get2DTransformSize16(u8 sphereSize16)
+function u32 SpheresModSupport.Manager.get2DTransformSize16(u8 sphereSize16)
 {
 	u32 sphereTransform
 
@@ -126,7 +126,7 @@ function u32 SpheresCostumer.Manager.get2DTransformSize16(u8 sphereSize16)
 }
 
 //? Returns the sphere size, expanded from 16 to 32 frames, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x1F - Small sphere size, since it is farthest from the camera
-function u8 SpheresCostumer.Manager.getSphereSize32(u16 sphereDistance)
+function u8 SpheresModSupport.Manager.getSphereSize32(u16 sphereDistance)
 {
 	u8 sphereSize32
 	
@@ -199,7 +199,7 @@ function u8 SpheresCostumer.Manager.getSphereSize32(u16 sphereDistance)
 }
 
 //? Returns the sphere size, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x0F - Small sphere size, since it is farthest from the camera
-function u8 SpheresCostumer.Manager.getSphereSize16(u16 sphereDistance)
+function u8 SpheresModSupport.Manager.getSphereSize16(u16 sphereDistance)
 {
 	u8 sphereSize16
 	
@@ -232,47 +232,6 @@ function u8 SpheresCostumer.Manager.getSphereSize16(u16 sphereDistance)
 	else if (sphereDistance < 15488)
 		sphereSize16 = 0x02
 	else if (sphereDistance < 17664)
-		sphereSize16 = 0x01
-	else
-		sphereSize16 = 0x00
-	
-	return sphereSize16
-}
-
-//? Returns the original sphere size, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x0F - Small sphere size, since it is farthest from the camera.
-function u8 SpheresCostumer.Manager.getSphereSize16_Classic(u16 sphereDistance)
-{
-	u8 sphereSize16
-	
-	if (sphereDistance < 0x1740)
-		sphereSize16 = 0x0f
-	else if (sphereDistance < 0x18a0)
-		sphereSize16 = 0x0e
-	else if (sphereDistance < 0x1a10)
-		sphereSize16 = 0x0d
-	else if (sphereDistance < 0x1b90)
-		sphereSize16 = 0x0c
-	else if (sphereDistance < 0x1d30)
-		sphereSize16 = 0x0b
-	else if (sphereDistance < 0x1f00)
-		sphereSize16 = 0x0a
-	else if (sphereDistance < 0x2100)
-		sphereSize16 = 0x09
-	else if (sphereDistance < 0x2330)
-		sphereSize16 = 0x08
-	else if (sphereDistance < 0x25a0)
-		sphereSize16 = 0x07
-	else if (sphereDistance < 0x2960)
-		sphereSize16 = 0x06
-	else if (sphereDistance < 0x2c80)
-		sphereSize16 = 0x05
-	else if (sphereDistance < 0x3180)
-		sphereSize16 = 0x04
-	else if (sphereDistance < 0x35c0)
-		sphereSize16 = 0x03
-	else if (sphereDistance < 0x3c80)
-		sphereSize16 = 0x02
-	else if (sphereDistance < 0x4500)
 		sphereSize16 = 0x01
 	else
 		sphereSize16 = 0x00

@@ -37,7 +37,7 @@ function void BlueSpheres.renderCustomCharacterShadows()
 }
 
 //? Draw a custom ground horizont glow.
-function void SpheresCostumer.renderGroundHorizont()
+function void SpheresModSupport.renderGroundHorizont()
 {
 	// Setup variables
 	u16 px = getScreenWidth() / 0x02
@@ -125,14 +125,14 @@ function void BlueSpheres.renderCustomGround()
 	}
 	
 	// Render ground glow effect
-	SpheresCostumer.renderGroundHorizont()
+	SpheresModSupport.renderGroundHorizont()
 	
 	// Render our own version of the ground
-	SpheresCostumer.renderCustomGround()
+	SpheresModSupport.renderCustomGround()
 }
 
 //? Draw a custom ground.
-function void SpheresCostumer.renderCustomGround()
+function void SpheresModSupport.renderCustomGround()
 {
 	u32 fieldColorBaseAddress = u32[0xffffe446]
 	Game.renderBlueSpheresGround(bluespheres.position.x, bluespheres.position.y, bluespheres.direction, u16[fieldColorBaseAddress], u16[fieldColorBaseAddress+0x08])
@@ -159,8 +159,8 @@ function void BlueSpheres.renderCustomSpheres()
 		ptr += 0x07
 		
 		// Get the size of the spheres, depending on its distance
-		u8 sphereSize32 = SpheresCostumer.Manager.getSphereSize32(sphereDistance)
-		u8 sphereSize16 = SpheresCostumer.Manager.getSphereSize16(sphereDistance)
+		u8 sphereSize32 = SpheresModSupport.Manager.getSphereSize32(sphereDistance)
+		u8 sphereSize16 = SpheresModSupport.Manager.getSphereSize16(sphereDistance)
 		
 		// Place the spheres correctly on the ground
 		py -= (0x10 - sphereSize32 / 0x02) * 0x02 / 0x03 - (getScreenHeight() - 224) + 0x01
@@ -192,7 +192,7 @@ function void BlueSpheres.renderCustomSpheres()
 			// Call another function instead of defining the spheres in the loop. Compatibility Issue
 			// Slight render optimization. Do not draw spheres if they are behind the screen
 			if !(SETTING_BS_RENDER_OPTIMIZE && (py >= getScreenHeight() || px >= getScreenWidth() || px <= 0x00 || (sphereDistance < 6304)))
-				SpheresCostumer.renderCustomSpheres(px, py, renderQueue, alpha, fog, sphereID, sphereSize32, sphereSize16)
+				SpheresModSupport.renderCustomSpheres(px, py, renderQueue, alpha, fog, sphereID, sphereSize32, sphereSize16)
 			
 			A3 += 0x06
 			--D1.s16
@@ -201,7 +201,7 @@ function void BlueSpheres.renderCustomSpheres()
 }
 
 //? Draw a custom spheres.
-function void SpheresCostumer.renderCustomSpheres(u16 px, u16 py, u16 renderQueue, u8 alpha, u32 fog, u8 sphereID, u8 sphereSize32, u8 sphereSize16)
+function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQueue, u8 alpha, u32 fog, u8 sphereID, u8 sphereSize32, u8 sphereSize16)
 {
 	u64 key
 	
@@ -265,9 +265,9 @@ function void SpheresCostumer.renderCustomSpheres(u16 px, u16 py, u16 renderQueu
 		else
 			emeraldColorID = (u8[0xffffffa4] & 0x07)
 		
-		if (Renderer.hasCustomSprite(SpheresCostumer.Manager.getEmeraldSprite(sphereID, emeraldColorID, sphereSize16)))
+		if (Renderer.hasCustomSprite(SpheresModSupport.Manager.getEmeraldSprite(sphereID, emeraldColorID, sphereSize16)))
 		{
-			key = SpheresCostumer.Manager.getEmeraldSprite(sphereID, emeraldColorID, sphereSize16)
+			key = SpheresModSupport.Manager.getEmeraldSprite(sphereID, emeraldColorID, sphereSize16)
 		}
 	}
 	// If the sprite does not exist, or there is no coincidence for sphereID, then try to draw the VDP sprite
@@ -288,7 +288,7 @@ function void SpheresCostumer.renderCustomSpheres(u16 px, u16 py, u16 renderQueu
 }
 
 //? Render a custom Display HUD.
-function void SpheresCostumer.renderHUD(u16 renderQueue)
+function void SpheresModSupport.renderHUD(u16 renderQueue)
 {
 	// Setup variables
 	s16 px = getScreenWidth() / 0x02
@@ -296,33 +296,33 @@ function void SpheresCostumer.renderHUD(u16 renderQueue)
 	s16 offset = 0x70
 	
 	// Call a counters
-	SpheresCostumer.renderBlueCounter(px - offset, py, renderQueue)
-	SpheresCostumer.renderRingsCounter(px + offset, py, renderQueue)
+	SpheresModSupport.renderBlueCounter(px - offset, py, renderQueue)
+	SpheresModSupport.renderRingsCounter(px + offset, py, renderQueue)
 }
 
 //? Render a custom Blue counter.
-function void SpheresCostumer.renderBlueCounter(s16 px, s16 py, u16 renderQueue)
+function void SpheresModSupport.renderBlueCounter(s16 px, s16 py, u16 renderQueue)
 {
 	s16 blue_counter = bluespheres.blue_remaining
-	SpheresCostumer.renderHUDCounter(px, py, renderQueue, "display_hud_bluecounter", blue_counter)
+	SpheresModSupport.renderHUDCounter(px, py, renderQueue, "display_hud_bluecounter", blue_counter)
 }
 
 //? Render a custom Rings counter.
-function void SpheresCostumer.renderRingsCounter(s16 px, s16 py, u16 renderQueue)
+function void SpheresModSupport.renderRingsCounter(s16 px, s16 py, u16 renderQueue)
 {
 	s16 rings_counter = !(bluespheres.minigame_mode || Game.getSetting(SETTING_BS_COUNTDOWN_RINGS)) ? bluespheres.rings_collected : (bluespheres.rings_remaining >= 1000) ? 0x00 : bluespheres.rings_remaining
-	SpheresCostumer.renderHUDCounter(px, py, renderQueue, "display_hud_ringscounter", rings_counter)
+	SpheresModSupport.renderHUDCounter(px, py, renderQueue, "display_hud_ringscounter", rings_counter)
 }
 
 //? Render substrate counter.
-function void SpheresCostumer.renderHUDCounter(s16 px, s16 py, u16 renderQueue, u64 counterKey, s16 number)
+function void SpheresModSupport.renderHUDCounter(s16 px, s16 py, u16 renderQueue, u64 counterKey, s16 number)
 {
 	// Draw numbers if all numbers exist
 	if (Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
 	{
-		SpheresCostumer.renderHUDNumber("display_hud_number_%d", number / 0x64, px - 0x10, py, renderQueue)
-		SpheresCostumer.renderHUDNumber("display_hud_number_%d", number / 0x0a, px, py, renderQueue)
-		SpheresCostumer.renderHUDNumber("display_hud_number_%d", number, px + 0x10, py, renderQueue)
+		SpheresModSupport.renderHUDNumber("display_hud_number_%d", number / 0x64, px - 0x10, py, renderQueue)
+		SpheresModSupport.renderHUDNumber("display_hud_number_%d", number / 0x0a, px, py, renderQueue)
+		SpheresModSupport.renderHUDNumber("display_hud_number_%d", number, px + 0x10, py, renderQueue)
 	}
 	
 	// Draw counter if it exists
@@ -331,7 +331,7 @@ function void SpheresCostumer.renderHUDCounter(s16 px, s16 py, u16 renderQueue, 
 }
 
 //? Render of one character numbers with specified parameters.
-function void SpheresCostumer.renderHUDNumber(u64 stringMask, u16 number, u16 px, u16 py, u16 renderQueue)
+function void SpheresModSupport.renderHUDNumber(u64 stringMask, u16 number, u16 px, u16 py, u16 renderQueue)
 {
 	u8 digit = number % 0x0a
 	Renderer.drawCustomSprite(stringformat(stringMask, digit), px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
