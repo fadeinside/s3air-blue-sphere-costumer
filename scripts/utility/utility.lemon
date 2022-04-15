@@ -11,7 +11,7 @@ function void Init()
 }
 
 //? Sets the state of the main character and animation frames for the extended framerate.
-function void SpheresModSupport.fn2da449()
+function void SpheresModSupport.SetupFramerate_MainCharacter()
 {
 	// Character standing
 	if (!bluespheres.started_running && !(u8[0xffffe432] & 0x80))
@@ -51,11 +51,11 @@ function void SpheresModSupport.fn2da449()
 			u16[A0 + 0x60] += 0x1000 >> 0x05
 	}
 	
-	SpheresModSupport.fn2da450()
+	SpheresModSupport.SetupFramerateLimit_Characters()
 }
 
 //? Sets the state of the second character and the animation frames for the extended framerate.
-function void SpheresModSupport.fncc4253()
+function void SpheresModSupport.SetupFramerate_SecondCharacter()
 {
 	// Character standing
 	if (!bluespheres.started_running && !(u8[0xffffe440] & 0x80))
@@ -95,11 +95,11 @@ function void SpheresModSupport.fncc4253()
 			u16[A0 + 0x60] += 0x1000 >> 0x05
 	}
 	
-	SpheresModSupport.fn2da450()
+	SpheresModSupport.SetupFramerateLimit_Characters()
 }
 
 //? Sets an animation frame limit for the extended character framerate.
-function void SpheresModSupport.fn2da450()
+function void SpheresModSupport.SetupFramerateLimit_Characters()
 {
 	D0 = char.animation_bs.sprite
 	if (D0.u8 >= 0x0c)
@@ -113,7 +113,7 @@ function void SpheresModSupport.fn2da450()
 }
 
 //? Sets the animation frames for the extended tail frame of the second character.
-function void SpheresModSupport.fn8abca6()
+function void SpheresModSupport.SetupFramerate_TailObject()
 {
 	// Variables
 	u16 bluespheres.faded_speed = (bluespheres.current_gamespeed >> 0x02)
@@ -127,12 +127,12 @@ function void SpheresModSupport.fn8abca6()
 		u16[A0 + 0x60] += (bluespheres.current_gamespeed - bluespheres.faded_speed) >> 0x05
 	else // Otherwise use the initial speed
 		u16[A0 + 0x60] += (0x1000 - (0x1000 >> 0x02)) >> 0x05
-		
-	SpheresModSupport.fn8abca7()
+	
+	SpheresModSupport.SetupFramerateLimit_TailObject()
 }
 
 //? Sets an animation frame limit for the extended tail frame of the second character.
-function void SpheresModSupport.fn8abca7()
+function void SpheresModSupport.SetupFramerateLimit_TailObject()
 {
 	D0 = char.animation_bs.sprite
 	if (D0.u8 >= 0x15)
@@ -148,7 +148,7 @@ function void SpheresModSupport.fn8abca7()
 //# address-hook(0x00903e) end(0x00919e)
 function void fn00903e()
 {
-	SpheresModSupport.fn2da449()
+	SpheresModSupport.SetupFramerate_MainCharacter()
 	
 	// Call the base function
 	base.fn00903e()
@@ -158,7 +158,7 @@ function void fn00903e()
 //# address-hook(0x009402) end(0x009442)
 function void fn009402()
 {
-	SpheresModSupport.fncc4253()
+	SpheresModSupport.SetupFramerate_SecondCharacter()
 	
 	// Call the base function
 	base.fn009402()
@@ -168,7 +168,7 @@ function void fn009402()
 //# address-hook(0x009488) end(0x0094d2)
 function void fn009488()
 {
-	SpheresModSupport.fn8abca6()
+	SpheresModSupport.SetupFramerate_TailObject()
 	
 	// Call the base function
 	base.fn009488()
@@ -203,36 +203,4 @@ function void fn009444()
 	
 	base.fn009444() // Call the base function
 	objA0.value32 += getScreenHeight() - 224
-}
-
-//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
-//# address-hook(0x00972e) end(0x0098ae)
-function void fn00972e()
-{
-	// Determine which sphere is in front of us
-	A1 = 0xfffff100
-	D0.u16 = ((bluespheres.position.x + 0x80) >> 0x08) & 0x1f
-	D1.u16 = ((bluespheres.position.y + 0x80) >> 0x08) & 0x1f
-	D1.u16 <<= 0x05
-	D1.u8 |= D0.u8
-	A1 += D1.s16
-	D2.u8 = u8[A1]
-	
-	// Ring sphere
-	if (D2.u8 == 0x04)
-	{
-		// Check if you are inside the ring now, then collect it. Like a Sonic Mania
-		D0.u16 = (bluespheres.position.x | bluespheres.position.y) & 0xe0
-		if (D0.u16 == 0x00)
-		{
-			// Call the base function
-			base.fn00972e()
-		}
-	}
-	// If it's not a ring, then call the base function for compatibility with other mods that make changes here
-	else
-	{
-		// Call the base function
-		base.fn00972e()
-	}
 }

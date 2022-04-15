@@ -153,14 +153,14 @@ function void BlueSpheres.renderCustomSpheres()
 	{
 		// Read sphere properties
 		u16 px = u16[ptr] + getScreenExtend() - 0x28
-		u16 py = u16[ptr+0x02]
-		u16 sphereDistance = u16[ptr+0x04]
-		u8 sphereID = u8[ptr+0x06]
+		u16 py = u16[ptr + 0x02]
+		u16 sphereDistance = u16[ptr + 0x04]
+		u8 sphereID = u8[ptr + 0x06]
 		ptr += 0x07
 		
 		// Get the size of the spheres, depending on its distance
-		u8 sphereSize32 = SpheresModSupport.Manager.getSphereSize32(sphereDistance)
-		u8 sphereSize16 = SpheresModSupport.Manager.getSphereSize16(sphereDistance)
+		u8 sphereSize32 = SpheresModSupport.getSphereSize32(sphereDistance)
+		u8 sphereSize16 = SpheresModSupport.getSphereSize16(sphereDistance)
 		
 		// Place the spheres correctly on the ground
 		py -= (0x10 - sphereSize32 / 0x02) * 0x02 / 0x03 - (getScreenHeight() - 224) + 0x01
@@ -226,7 +226,7 @@ function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQu
 		key = stringformat("sphere_ring_%d_size_%d", static_rings.animframe, sphereSize16)
 	}
 	// Green sphere (0x0c when it's in a touch state) (Needed Sonic 3: D.A. Garden Edition mod)
-	else if ((sphereID == 0x05 && (u8[0xffffef7c] && 0x01)) || sphereID == 0x0c && Renderer.hasCustomSprite(stringformat("sphere_green_size_%d", sphereSize16)))
+	else if (((sphereID == 0x05 && (u8[0xffffef7c] && 0x01)) || sphereID == 0x0c) && Renderer.hasCustomSprite(stringformat("sphere_green_size_%d", sphereSize16)))
 	{
 		key = stringformat("sphere_green_size_%d", sphereSize16)
 	}
@@ -256,28 +256,18 @@ function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQu
 		key = "sphere_sparkle_3"
 	}
 	// Chaos and Super emerald
-	else if (sphereID == 0x0b || sphereID == 0x0d)
+	else if ((sphereID == 0x0b || sphereID == 0x0d) && Renderer.hasCustomSprite(SpheresModSupport.getEmeraldSprite(sphereID, sphereSize16)))
 	{
-		// Use the stage number (preset stages) or algorithmic stage information to get the emerald color ID
-		u8 emeraldColorID
-		if !(bluespheres.minigame_mode)
-			emeraldColorID = global.next_bluespheres
-		else
-			emeraldColorID = (u8[0xffffffa4] & 0x07)
-		
-		if (Renderer.hasCustomSprite(SpheresModSupport.Manager.getEmeraldSprite(sphereID, emeraldColorID, sphereSize16)))
-		{
-			key = SpheresModSupport.Manager.getEmeraldSprite(sphereID, emeraldColorID, sphereSize16)
-		}
+		key = SpheresModSupport.getEmeraldSprite(sphereID, sphereSize16)
 	}
 	// If the sprite does not exist, or there is no coincidence for sphereID, then try to draw the VDP sprite
 	else
 	{
 		// If the modern style is used, then add fog for the spheres that are beyond the horizon. AIR part
 		if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
-			Renderer.drawVdpSpriteWithTint(px + u16[A3+0x04], py + s8[A3], u8[A3+0x01], u16[A3+0x02] + D6.u16, renderQueue, (0xffffff - fog) + (u32(alpha) << 24), fog)
+			Renderer.drawVdpSpriteWithTint(px + u16[A3 + 0x04], py + s8[A3], u8[A3 + 0x01], u16[A3 + 0x02] + D6.u16, renderQueue, (0xffffff - fog) + (u32(alpha) << 24), fog)
 		else
-			Renderer.drawVdpSprite(px + u16[A3+0x04], py + s8[A3], u8[A3+0x01], u16[A3+0x02] + D6.u16, renderQueue)
+			Renderer.drawVdpSprite(px + u16[A3 + 0x04], py + s8[A3], u8[A3 + 0x01], u16[A3 + 0x02] + D6.u16, renderQueue)
 			
 		// Finish the function on this
 		return
