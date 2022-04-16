@@ -178,7 +178,7 @@ function void BlueSpheres.renderCustomSpheres()
 //? Draw a custom spheres.
 function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQueue, u8 alpha, u32 fog, u8 sphereID, u8 sphereSize32, u8 sphereSize16)
 {
-	u64 key
+	string key
 	
 	// Red sphere
 	if (sphereID == 0x01 && Renderer.hasCustomSprite(stringformat("sphere_red_size_%d", sphereSize16)))
@@ -280,7 +280,7 @@ function void SpheresModSupport.renderHUD_RingsCounter(s32 px, s32 py, u16 rende
 }
 
 //? Render substrate counter.
-function void SpheresModSupport.renderHUD_Counter(s32 px, s32 py, u16 renderQueue, u64 counterKey, s32 number)
+function void SpheresModSupport.renderHUD_Counter(s32 px, s32 py, u16 renderQueue, string counterKey, s32 number)
 {
 	// Draw numbers if all numbers exist
 	if (Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
@@ -296,7 +296,7 @@ function void SpheresModSupport.renderHUD_Counter(s32 px, s32 py, u16 renderQueu
 }
 
 //? Render of one character numbers with specified parameters.
-function void SpheresModSupport.renderHUD_Digit(u64 stringMask, s32 number, s32 px, s32 py, u16 renderQueue)
+function void SpheresModSupport.renderHUD_Digit(string stringMask, s32 number, s32 px, s32 py, u16 renderQueue)
 {
 	u8 digit = number % 0x0a
 	Renderer.drawCustomSprite(stringformat(stringMask, digit), px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)

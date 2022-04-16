@@ -1,11 +1,11 @@
 //? Returns the emerald sprite key.
-function u64 SpheresModSupport.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
+function string SpheresModSupport.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
 {
 	// Use the stage number or algorithmic stage information to get the emerald color ID
 	u8 emeraldColorID = !(bluespheres.minigame_mode) ? global.next_bluespheres : (u8[0xffffffa4] & 0x07)
 	
 	// Determine whether sphereID is a chaos emerald or not
-	u64 emeraldType = (sphereID == 0x0b) ? "chaos" : "super"
+	string emeraldType = (sphereID == 0x0b) ? "chaos" : "super"
 	
 #if GAMEAPP >= 0x21091200
 	// Replace Yellow Emerald with Orange, and Orange with Yellow, if the mod "Yellow Emerald" is active. Otherwise use the original position
@@ -27,7 +27,7 @@ function u64 SpheresModSupport.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
 #endif 
 	
 	// Build key
-	u64 key = stringformat("emerald_%s_0x%02x_size_%d", emeraldType, emeraldColorID, sphereSize16)
+	string key = stringformat("emerald_%s_0x%02x_size_%d", emeraldType, emeraldColorID, sphereSize16)
 	
 	// Return sprite key
 	return key
