@@ -2,37 +2,26 @@
 function void BlueSpheres.renderCustomCharacterShadows()
 {
 	// Setup variables
-	u16 px = getScreenWidth() / 0x02
-	u16 py = 0x94 + getScreenHeight() - 224
-	u8 alpha = 0x90
+	s32 px = getScreenWidth() / 0x02
+	s32 py = 0x94 + getScreenHeight() - 224
 	
 	// Smoothed character shadow
 	if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
 	{
 		// Check if the custom sprite exist
 		if (Renderer.hasCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_smooth" : "player_shadow_2P_smooth"))
-		{
-			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_smooth" : "player_shadow_2P_smooth", px, py, 0x00, 0x00, 0x3100, 0x00, alpha)
-		}
-		// Else draw the original AIR sprite
-		else
-		{
+			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_smooth" : "player_shadow_2P_smooth", px, py, 0x00, 0x00, 0x3100)
+		else // Else draw the original AIR sprite
 			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_smooth" : "bluespheres_shadow_2P_smooth", 143 + getScreenExtend(), py, 0x00, 0x00, 0x3100)
-		}
 	}
 	// Sharped character shadow
 	else
 	{
 		// Check if the custom sprite exist
 		if (Renderer.hasCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_sharp" : "player_shadow_2P_sharp"))
-		{
-			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_sharp" : "player_shadow_2P_sharp", px, py, 0x00, 0x00, 0x3100, 0x00, alpha)
-		}
-		// Else draw the original AIR sprite
-		else
-		{
+			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_sharp" : "player_shadow_2P_sharp", px, py, 0x00, 0x00, 0x3100)
+		else // Else draw the original AIR sprite
 			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_pixel" : "bluespheres_shadow_2P_pixel", 143 + getScreenExtend(), py, 0x00, 0x00, 0x3100)
-		}
 	}
 }
 
@@ -40,9 +29,8 @@ function void BlueSpheres.renderCustomCharacterShadows()
 function void SpheresModSupport.renderGroundHorizont()
 {
 	// Setup variables
-	u16 px = getScreenWidth() / 0x02
-	u16 py = getScreenHeight() - 224
-	u8 alpha
+	s32 px = getScreenWidth() / 0x02
+	s32 py = getScreenHeight() - 224
 	
 	// Smoothed horizon
 	if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
@@ -50,30 +38,23 @@ function void SpheresModSupport.renderGroundHorizont()
 		// Check if the custom sprite exist
 		if (Renderer.hasCustomSprite("horizont_smooth_background"))
 		{
-			py -= 0x08
-			alpha = 0x80
-			Renderer.drawCustomSprite("horizont_smooth_background", px, py, 0x00, 0, 0x2000, 0x00, alpha)
-			Renderer.drawCustomSprite("horizont_smooth_background", px, py, 0x00, SPRITE_FLAG_FLIP_X, 0x2000, 0x00, alpha)
+			Renderer.drawCustomSprite("horizont_smooth_background", px, py - 0x08, 0x00, 0, 0x2000)
+			Renderer.drawCustomSprite("horizont_smooth_background", px, py - 0x08, 0x00, SPRITE_FLAG_FLIP_X, 0x2000)
 		}
-		// Else draw the original AIR sprite
-		else
+		else // Else draw the original AIR sprite
 		{
-			Renderer.drawCustomSprite("bluespheres_glow_background", px, 20 + py, 0x00, 0x00, 0x2000)
+			Renderer.drawCustomSprite("bluespheres_glow_background", px, py + 20, 0x00, 0x00, 0x2000)
 		}
 		
 		// Check if the custom sprite exist
 		if (Renderer.hasCustomSprite("horizont_smooth_foreground"))
 		{
-			py += 0x26
-			alpha = 0x94
-			
-			Renderer.drawCustomSprite("horizont_smooth_foreground", px, py, 0x00, 0, 0x3100, 0x00, alpha)
-			Renderer.drawCustomSprite("horizont_smooth_foreground", px, py, 0x00, SPRITE_FLAG_FLIP_X, 0x3100, 0x00, alpha)
+			Renderer.drawCustomSprite("horizont_smooth_foreground", px, py + 0x1e, 0x00, 0, 0x3100)
+			Renderer.drawCustomSprite("horizont_smooth_foreground", px, py + 0x1e, 0x00, SPRITE_FLAG_FLIP_X, 0x3100)
 		}
-		// Else draw the original AIR sprite
-		else
+		else // Else draw the original AIR sprite
 		{
-			Renderer.drawCustomSprite("bluespheres_glow_foreground", px, 30 + py, 0x00, 0x00, 0x3100)
+			Renderer.drawCustomSprite("bluespheres_glow_foreground", px, py + 0x1e, 0x00, 0x00, 0x3100)
 		}
 	}
 	// Sharped horizont
@@ -82,21 +63,15 @@ function void SpheresModSupport.renderGroundHorizont()
 		// Check if the custom sprite exist
 		if (Renderer.hasCustomSprite("horizont_sharp_background"))
 		{
-			py -= 0x08
-			alpha = 0x80
-			
-			Renderer.drawCustomSprite("horizont_sharp_background", px, py, 0x00, 0, 0x2000, 0x00, alpha)
-			Renderer.drawCustomSprite("horizont_sharp_background", px, py, 0x00, SPRITE_FLAG_FLIP_X, 0x2000, 0x00, alpha)
+			Renderer.drawCustomSprite("horizont_sharp_background", px, py - 0x08, 0x00, 0, 0x2000)
+			Renderer.drawCustomSprite("horizont_sharp_background", px, py - 0x08, 0x00, SPRITE_FLAG_FLIP_X, 0x2000)
 		}
 		
 		// Check if the custom sprite exist
 		if (Renderer.hasCustomSprite("horizont_sharp_foreground"))
 		{
-			py += 0x26
-			alpha = 0x94
-			
-			Renderer.drawCustomSprite("horizont_sharp_foreground", px, py, 0x00, 0, 0x3100, 0x00, alpha)
-			Renderer.drawCustomSprite("horizont_sharp_foreground", px, py, 0x00, SPRITE_FLAG_FLIP_X, 0x3100, 0x00, alpha)
+			Renderer.drawCustomSprite("horizont_sharp_foreground", px, py + 0x1e, 0x00, 0, 0x3100)
+			Renderer.drawCustomSprite("horizont_sharp_foreground", px, py + 0x1e, 0x00, SPRITE_FLAG_FLIP_X, 0x3100)
 		}
 	}
 }
@@ -281,38 +256,38 @@ function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQu
 function void SpheresModSupport.renderHUD(u16 renderQueue)
 {
 	// Setup variables
-	s16 px = getScreenWidth() / 0x02
-	s16 py = 0x14
-	s16 offset = 0x70
+	s32 distance = 0x70 // Distance between counters
+	s32 px = getScreenWidth() / 0x02
+	s32 py = 0x14
 	
 	// Call a counters
-	SpheresModSupport.renderBlueCounter(px - offset, py, renderQueue)
-	SpheresModSupport.renderRingsCounter(px + offset, py, renderQueue)
+	SpheresModSupport.renderHUD_BlueCounter(px - distance, py, renderQueue)
+	SpheresModSupport.renderHUD_RingsCounter(px + distance, py, renderQueue)
 }
 
 //? Render a custom Blue counter.
-function void SpheresModSupport.renderBlueCounter(s16 px, s16 py, u16 renderQueue)
+function void SpheresModSupport.renderHUD_BlueCounter(s32 px, s32 py, u16 renderQueue)
 {
-	s16 blue_counter = bluespheres.blue_remaining
-	SpheresModSupport.renderHUDCounter(px, py, renderQueue, "display_hud_bluecounter", blue_counter)
+	s32 blue_counter = bluespheres.blue_remaining
+	SpheresModSupport.renderHUD_Counter(px, py, renderQueue, "display_hud_bluecounter", blue_counter)
 }
 
 //? Render a custom Rings counter.
-function void SpheresModSupport.renderRingsCounter(s16 px, s16 py, u16 renderQueue)
+function void SpheresModSupport.renderHUD_RingsCounter(s32 px, s32 py, u16 renderQueue)
 {
-	s16 rings_counter = !(bluespheres.minigame_mode || Game.getSetting(SETTING_BS_COUNTDOWN_RINGS)) ? bluespheres.rings_collected : (bluespheres.rings_remaining >= 1000) ? 0x00 : bluespheres.rings_remaining
-	SpheresModSupport.renderHUDCounter(px, py, renderQueue, "display_hud_ringscounter", rings_counter)
+	s32 rings_counter = !(bluespheres.minigame_mode || Game.getSetting(SETTING_BS_COUNTDOWN_RINGS)) ? bluespheres.rings_collected : (bluespheres.rings_remaining >= 1000) ? 0x00 : bluespheres.rings_remaining
+	SpheresModSupport.renderHUD_Counter(px, py, renderQueue, "display_hud_ringscounter", rings_counter)
 }
 
 //? Render substrate counter.
-function void SpheresModSupport.renderHUDCounter(s16 px, s16 py, u16 renderQueue, u64 counterKey, s16 number)
+function void SpheresModSupport.renderHUD_Counter(s32 px, s32 py, u16 renderQueue, u64 counterKey, s32 number)
 {
 	// Draw numbers if all numbers exist
 	if (Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
 	{
-		SpheresModSupport.renderHUDNumber("display_hud_number_%d", number / 0x64, px - 0x10, py, renderQueue)
-		SpheresModSupport.renderHUDNumber("display_hud_number_%d", number / 0x0a, px, py, renderQueue)
-		SpheresModSupport.renderHUDNumber("display_hud_number_%d", number, px + 0x10, py, renderQueue)
+		SpheresModSupport.renderHUD_Digit("display_hud_number_%d", number / 0x64, px - 0x10, py, renderQueue)
+		SpheresModSupport.renderHUD_Digit("display_hud_number_%d", number / 0x0a, px, py, renderQueue)
+		SpheresModSupport.renderHUD_Digit("display_hud_number_%d", number, px + 0x10, py, renderQueue)
 	}
 	
 	// Draw counter if it exists
@@ -321,7 +296,7 @@ function void SpheresModSupport.renderHUDCounter(s16 px, s16 py, u16 renderQueue
 }
 
 //? Render of one character numbers with specified parameters.
-function void SpheresModSupport.renderHUDNumber(u64 stringMask, u16 number, u16 px, u16 py, u16 renderQueue)
+function void SpheresModSupport.renderHUD_Digit(u64 stringMask, s32 number, s32 px, s32 py, u16 renderQueue)
 {
 	u8 digit = number % 0x0a
 	Renderer.drawCustomSprite(stringformat(stringMask, digit), px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
