@@ -5,11 +5,15 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		if (Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter"))
 		{
+			if (index == 0xc592)
+				return true
+			
 			SpheresModSupport.renderHUD(renderQueue)
 			return true
 		}
 	}
 	
+	// Return the base function
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
 }
 
@@ -18,14 +22,10 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	// Get Blue Spheres text (consists of two objects)
 	if (objA0.update_address == 0x008e94)
 	{
-		if (objA0.animation.sprite == 0x00 && Renderer.hasCustomSprite("display_text_getbluespheres_1")) // Part 1
+		string key = stringformat("display_text_getbluespheres_%d", objA0.animation.sprite)
+		if (Renderer.hasCustomSprite(key))
 		{
-			Renderer.drawCustomSprite("display_text_getbluespheres_1", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
-			return true
-		}
-		if (objA0.animation.sprite == 0x01 && Renderer.hasCustomSprite("display_text_getbluespheres_2")) // Part 2
-		{
-			Renderer.drawCustomSprite("display_text_getbluespheres_2", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
+			Renderer.drawCustomSprite(key, px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
 			return true
 		}
 	}
@@ -33,17 +33,14 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	// Perfect text (consists of two objects)
 	if (!u8[0x8e1214] && (objA0.update_address == 0x008f24 || objA0.update_address == 0x008eec))
 	{
-		if (objA0.animation.sprite == 0x02 && Renderer.hasCustomSprite("display_text_perfect_1")) // Part 1
+		string key = stringformat("display_text_perfect_%d", objA0.animation.sprite)
+		if (Renderer.hasCustomSprite(key))
 		{
-			Renderer.drawCustomSprite("display_text_perfect_1", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
-			return true
-		}
-		if (objA0.animation.sprite == 0x03 && Renderer.hasCustomSprite("display_text_perfect_2")) // Part 2
-		{
-			Renderer.drawCustomSprite("display_text_perfect_2", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
+			Renderer.drawCustomSprite(key, px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
 			return true
 		}
 	}
 	
+	// Return the base function
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }

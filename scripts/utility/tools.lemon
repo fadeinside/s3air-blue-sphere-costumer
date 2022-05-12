@@ -1,3 +1,12 @@
+//? Check for all digit sprites.
+function bool SpheresModSupport.hasDigitSprites()
+{
+	if (Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
+		return true
+	
+	return false
+}
+
 //? Returns the emerald sprite key.
 function string SpheresModSupport.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
 {

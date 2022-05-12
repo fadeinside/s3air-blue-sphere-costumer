@@ -1,0 +1,19 @@
+{
+	// Yellow sphere
+	"sphere_yellow_size_0": { "File": "spheres/sphere_yellow.png", "Rect": "1,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_1": { "File": "spheres/sphere_yellow.png", "Rect": "34,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_2": { "File": "spheres/sphere_yellow.png", "Rect": "67,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_3": { "File": "spheres/sphere_yellow.png", "Rect": "100,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_4": { "File": "spheres/sphere_yellow.png", "Rect": "133,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_5": { "File": "spheres/sphere_yellow.png", "Rect": "166,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_6": { "File": "spheres/sphere_yellow.png", "Rect": "199,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_7": { "File": "spheres/sphere_yellow.png", "Rect": "232,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_8": { "File": "spheres/sphere_yellow.png", "Rect": "265,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_9": { "File": "spheres/sphere_yellow.png", "Rect": "298,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_10": { "File": "spheres/sphere_yellow.png", "Rect": "331,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_11": { "File": "spheres/sphere_yellow.png", "Rect": "364,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_12": { "File": "spheres/sphere_yellow.png", "Rect": "397,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_13": { "File": "spheres/sphere_yellow.png", "Rect": "430,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_14": { "File": "spheres/sphere_yellow.png", "Rect": "463,1,32,32", "Center": "16,16" },
+	"sphere_yellow_size_15": { "File": "spheres/sphere_yellow.png", "Rect": "496,1,32,32", "Center": "16,16" }
+}
