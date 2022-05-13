@@ -1,10 +1,16 @@
-//? Check for all digit sprites.
-function bool SpheresModSupport.hasDigitSprites()
+//? Get the transparency value for some spheres during collecting.
+function u8 SpheresModSupport.getOnCollectedAlpha(u8 sphereID)
 {
-	if (Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
-		return true
+	// Make some spheres transparent during collecting when modern style is used
+	if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
+	{
+		// 0x0a is blue sphere during collecting
+		if (sphereID == 0x0a)
+			return 0xa0
+	}
 	
-	return false
+	// Return default value
+	return 0xff
 }
 
 //? Returns the emerald sprite key.
@@ -16,256 +22,229 @@ function string SpheresModSupport.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
 	// Determine whether sphereID is a chaos emerald or not
 	string emeraldType = (sphereID == 0x0b) ? "chaos" : "super"
 	
-#if GAMEAPP >= 0x21091200
-	// Replace Yellow Emerald with Orange, and Orange with Yellow, if the mod "Yellow Emerald" is active. Otherwise use the original position
-	u8 emeraldColor = emeraldColorID
-	
-	// "Yellow Emerald" by Guthi, check https://gamebanana.com/mods/54326
-	if (Mods.isModActive("Yellow Emerald"))
-	{
-		if (emeraldColorID == 0x01)
-			emeraldColor = 0x07
-		else if (emeraldColorID == 0x07)
-			emeraldColor = 0x01
-		emeraldColorID = emeraldColor
-	}
-	
-	// "3D Side View Chaos Emeralds" by Agnoristos, check https://gamebanana.com/mods/322550
-	if (Mods.isModActive("3D Side View Chaos Emeralds"))
-		emeraldType = "super"
-#endif 
-	
-	// Build key
-	string key = stringformat("emerald_%s_0x%02x_size_%d", emeraldType, emeraldColorID, sphereSize16)
-	
 	// Return sprite key
-	return key
+	return stringformat("emerald_%s_0x%02x_size_%d", emeraldType, emeraldColorID, sphereSize16)
 }
 
 //? Returns the sphere transformation, depending on its size. (The method of using 32 frames is smoother, but visually does not correspond to the perspective of the ground. It is recommended to use the 16 frames method). Used to transform the sphere size, depending on its size on the ground, as an example, the rings in Blue Spheres stages from Mania uses something similar.
 function u32 SpheresModSupport.get2DTransformSize32(u8 sphereSize32)
 {
-	u32 sphereTransform
-
 	if (sphereSize32 == 0x1f)
-		sphereTransform = 4096
+		return 4096
 	else if (sphereSize32 == 0x1e)
-		sphereTransform = 6144
+		return 6144
 	else if (sphereSize32 == 0x1d)
-		sphereTransform = 8192
+		return 8192
 	else if (sphereSize32 == 0x1c)
-		sphereTransform = 10240
+		return 10240
 	else  if (sphereSize32 == 0x1b)
-		sphereTransform = 12288
+		return 12288
 	else  if (sphereSize32 == 0x1a)
-		sphereTransform = 14336
+		return 14336
 	else if (sphereSize32 == 0x19)
-		sphereTransform = 16384
+		return 16384
 	else if (sphereSize32 == 0x18)
-		sphereTransform = 18432
+		return 18432
 	else if (sphereSize32 == 0x17)
-		sphereTransform = 20480
+		return 20480
 	else if (sphereSize32 == 0x16)
-		sphereTransform = 22528
+		return 22528
 	else if (sphereSize32 == 0x15)
-		sphereTransform = 24576
+		return 24576
 	else if (sphereSize32 == 0x14)
-		sphereTransform = 26624
+		return 26624
 	else if (sphereSize32 == 0x13)
-		sphereTransform = 28672
+		return 28672
 	else if (sphereSize32 == 0x12)
-		sphereTransform = 30720
+		return 30720
 	else if (sphereSize32 == 0x11)
-		sphereTransform = 32768
+		return 32768
 	else if (sphereSize32 == 0x10)
-		sphereTransform = 34816
+		return 34816
 	else if (sphereSize32 == 0x0f)
-		sphereTransform = 36864
+		return 36864
 	else if (sphereSize32 == 0x0e)
-		sphereTransform = 38312
+		return 38312
 	else if (sphereSize32 == 0x0d)
-		sphereTransform = 40960
+		return 40960
 	else if (sphereSize32 == 0x0c)
-		sphereTransform = 43008
+		return 43008
 	else if (sphereSize32 == 0x0b)
-		sphereTransform = 45056
+		return 45056
 	else if (sphereSize32 == 0x0a)
-		sphereTransform = 47104
+		return 47104
 	else if (sphereSize32 == 0x09)
-		sphereTransform = 49152
+		return 49152
 	else if (sphereSize32 == 0x08)
-		sphereTransform = 51200
+		return 51200
 	else if (sphereSize32 == 0x07)
-		sphereTransform = 53248
+		return 53248
 	else if (sphereSize32 == 0x06)
-		sphereTransform = 55296
+		return 55296
 	else if (sphereSize32 == 0x05)
-		sphereTransform = 57344
+		return 57344
 	else if (sphereSize32 == 0x04)
-		sphereTransform = 59392
+		return 59392
 	else if (sphereSize32 == 0x03)
-		sphereTransform = 61440
+		return 61440
 	else if (sphereSize32 == 0x02)
-		sphereTransform = 63488
+		return 63488
 	else if (sphereSize32 == 0x01)
-		sphereTransform = 64512
+		return 64512
 	else
-		sphereTransform = 65536
-	
-	return sphereTransform
+		return 65536
 }
 
 //? Returns the sphere transformation, depending on its size. Used to transform the sphere size, depending on its size on the ground, as an example, the rings in Blue Spheres stages from Mania uses something similar.
 function u32 SpheresModSupport.get2DTransformSize16(u8 sphereSize16)
 {
-	u32 sphereTransform
-
 	if (sphereSize16 == 0x0f)
-		sphereTransform = 4096
+		return 4096
 	else if (sphereSize16 == 0x0e)
-		sphereTransform = 8192
+		return 8192
 	else  if (sphereSize16 == 0x0d)
-		sphereTransform = 12288
+		return 12288
 	else if (sphereSize16 == 0x0c)
-		sphereTransform = 16384
+		return 16384
 	else if (sphereSize16 == 0x0b)
-		sphereTransform = 20480
+		return 20480
 	else if (sphereSize16 == 0x0a)
-		sphereTransform = 24576
+		return 24576
 	else if (sphereSize16 == 0x09)
-		sphereTransform = 28672
+		return 28672
 	else if (sphereSize16 == 0x08)
-		sphereTransform = 32768
+		return 32768
 	else if (sphereSize16 == 0x07)
-		sphereTransform = 36864
+		return 36864
 	else if (sphereSize16 == 0x06)
-		sphereTransform = 40960
+		return 40960
 	else if (sphereSize16 == 0x05)
-		sphereTransform = 45056
+		return 45056
 	else if (sphereSize16 == 0x04)
-		sphereTransform = 49152
+		return 49152
 	else if (sphereSize16 == 0x03)
-		sphereTransform = 53248
+		return 53248
 	else if (sphereSize16 == 0x02)
-		sphereTransform = 57344
+		return 57344
 	else if (sphereSize16 == 0x01)
-		sphereTransform = 61440
+		return 61440
 	else
-		sphereTransform = 0x10000
-	
-	return sphereTransform
+		return 0x10000
 }
 
-//? Returns the sphere size, expanded from 16 to 32 frames, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x1F - Small sphere size, since it is farthest from the camera
+//? Returns the sphere size, expanded from 16 to 32 frames, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x1f - Small sphere size, since it is farthest from the camera
 function u8 SpheresModSupport.getSphereSize32(u16 sphereDistance)
 {
-	u8 sphereSize32
-	
 	if (sphereDistance < 5952)
-		sphereSize32 = 0x1f
+		return 0x1f
 	else if (sphereDistance < 6128)
-		sphereSize32 = 0x1e
+		return 0x1e
 	else if (sphereDistance < 6304)
-		sphereSize32 = 0x1d
+		return 0x1d
 	else if (sphereDistance < 6488)
-		sphereSize32 = 0x1c
+		return 0x1c
 	else if (sphereDistance < 6672)
-		sphereSize32 = 0x1b
+		return 0x1b
 	else if (sphereDistance < 6864)
-		sphereSize32 = 0x1a
+		return 0x1a
 	else if (sphereDistance < 7056)
-		sphereSize32 = 0x19
+		return 0x19
 	else if (sphereDistance < 7264)
-		sphereSize32 = 0x18
+		return 0x18
 	else if (sphereDistance < 7472)
-		sphereSize32 = 0x17
+		return 0x17
 	else if (sphereDistance < 7704)
-		sphereSize32 = 0x16
+		return 0x16
 	else if (sphereDistance < 7936)
-		sphereSize32 = 0x15
+		return 0x15
 	else if (sphereDistance < 8392)
-		sphereSize32 = 0x14
+		return 0x14
 	else if (sphereDistance < 8448)
-		sphereSize32 = 0x13
+		return 0x13
 	else if (sphereDistance < 8925)
-		sphereSize32 = 0x12
+		return 0x12
 	else if (sphereDistance < 9003)
-		sphereSize32 = 0x11
+		return 0x11
 	else if (sphereDistance < 9317)
-		sphereSize32 = 0x10
+		return 0x10
 	else if (sphereDistance < 9632)
-		sphereSize32 = 0x0f
+		return 0x0f
 	else if (sphereDistance < 10112)
-		sphereSize32 = 0x0e
+		return 0x0e
 	else if (sphereDistance < 10592)
-		sphereSize32 = 0x0d
+		return 0x0d
 	else if (sphereDistance < 10992)
-		sphereSize32 = 0x0c
+		return 0x0c
 	else if (sphereDistance < 11392)
-		sphereSize32 = 0x0b
+		return 0x0b
 	else if (sphereDistance < 12032)
-		sphereSize32 = 0x0a
+		return 0x0a
 	else if (sphereDistance < 12672)
-		sphereSize32 = 0x09
+		return 0x09
 	else if (sphereDistance < 13216)
-		sphereSize32 = 0x08
+		return 0x08
 	else if (sphereDistance < 13760)
-		sphereSize32 = 0x07
+		return 0x07
 	else if (sphereDistance < 14624)
-		sphereSize32 = 0x06
+		return 0x06
 	else if (sphereDistance < 15488)
-		sphereSize32 = 0x05
+		return 0x05
 	else if (sphereDistance < 16576)
-		sphereSize32 = 0x04
+		return 0x04
 	else if (sphereDistance < 17664)
-		sphereSize32 = 0x03
+		return 0x03
 	else if (sphereDistance < 18072)
-		sphereSize32 = 0x02
+		return 0x02
 	else if (sphereDistance < 18381)
-		sphereSize32 = 0x01
+		return 0x01
 	else
-		sphereSize32 = 0x00
-	
-	return sphereSize32
+		return 0x00
 }
 
-//? Returns the sphere size, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x0F - Small sphere size, since it is farthest from the camera
+//? Returns the sphere size, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x0f - Small sphere size, since it is farthest from the camera
 function u8 SpheresModSupport.getSphereSize16(u16 sphereDistance)
 {
-	u8 sphereSize16
-	
 	if (sphereDistance < 5952)
-		sphereSize16 = 0x0f
+		return 0x0f
 	else if (sphereDistance < 6304)
-		sphereSize16 = 0x0e
+		return 0x0e
 	else if (sphereDistance < 6672)
-		sphereSize16 = 0x0d
+		return 0x0d
 	else if (sphereDistance < 7056)
-		sphereSize16 = 0x0c
+		return 0x0c
 	else if (sphereDistance < 7472)
-		sphereSize16 = 0x0b
+		return 0x0b
 	else if (sphereDistance < 7936)
-		sphereSize16 = 0x0a
+		return 0x0a
 	else if (sphereDistance < 8448)
-		sphereSize16 = 0x09
+		return 0x09
 	else if (sphereDistance < 9003)
-		sphereSize16 = 0x08
+		return 0x08
 	else if (sphereDistance < 9632)
-		sphereSize16 = 0x07
+		return 0x07
 	else if (sphereDistance < 10592)
-		sphereSize16 = 0x06
+		return 0x06
 	else if (sphereDistance < 11392)
-		sphereSize16 = 0x05
+		return 0x05
 	else if (sphereDistance < 12672)
-		sphereSize16 = 0x04
+		return 0x04
 	else if (sphereDistance < 13760)
-		sphereSize16 = 0x03
+		return 0x03
 	else if (sphereDistance < 15488)
-		sphereSize16 = 0x02
+		return 0x02
 	else if (sphereDistance < 17664)
-		sphereSize16 = 0x01
+		return 0x01
 	else
-		sphereSize16 = 0x00
+		return 0x00
+}
+
+//? Check for all digit sprites (Used inside this mod just for optimization).
+function bool SpheresModSupport.hasDigitSprites()
+{
+	// Check if the custom sprites exist
+	if (Renderer.hasCustomSprite("display_hud_number_0") && Renderer.hasCustomSprite("display_hud_number_1") && Renderer.hasCustomSprite("display_hud_number_2") && Renderer.hasCustomSprite("display_hud_number_3") && Renderer.hasCustomSprite("display_hud_number_4") && Renderer.hasCustomSprite("display_hud_number_5") && Renderer.hasCustomSprite("display_hud_number_6") && Renderer.hasCustomSprite("display_hud_number_7") && Renderer.hasCustomSprite("display_hud_number_8") && Renderer.hasCustomSprite("display_hud_number_9"))
+		return true
 	
-	return sphereSize16
+	// Return failsave value
+	return false
 }

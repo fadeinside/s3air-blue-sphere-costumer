@@ -1,80 +1,6 @@
-//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
-function void BlueSpheres.renderCustomCharacterShadows()
-{
-	// Setup variables
-	s32 px = getScreenWidth() / 0x02
-	s32 py = 0x94 + getScreenHeight() - 224
-	
-	// Smoothed character shadow
-	if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
-	{
-		// Check if the custom sprite exist
-		if (Renderer.hasCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_smooth" : "player_shadow_2P_smooth"))
-			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_smooth" : "player_shadow_2P_smooth", px, py, 0x00, 0x00, 0x3100)
-		else // Else draw the original AIR sprite
-			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_smooth" : "bluespheres_shadow_2P_smooth", 143 + getScreenExtend(), py, 0x00, 0x00, 0x3100)
-	}
-	// Sharped character shadow
-	else
-	{
-		// Check if the custom sprite exist
-		if (Renderer.hasCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_sharp" : "player_shadow_2P_sharp"))
-			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_sharp" : "player_shadow_2P_sharp", px, py, 0x00, 0x00, 0x3100)
-		else // Else draw the original AIR sprite
-			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_pixel" : "bluespheres_shadow_2P_pixel", 143 + getScreenExtend(), py, 0x00, 0x00, 0x3100)
-	}
-}
-
-//? Draw a custom ground horizont glow.
-function void SpheresModSupport.renderGroundHorizont()
-{
-	// Setup variables
-	s32 px = getScreenWidth() / 0x02
-	s32 py = getScreenHeight() - 224
-	
-	// Smoothed horizon
-	if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
-	{
-		// Check if the custom sprite exist
-		if (Renderer.hasCustomSprite("horizont_smooth_background"))
-		{
-			Renderer.drawCustomSprite("horizont_smooth_background", px, py - 0x08, 0x00, 0, 0x2000)
-			Renderer.drawCustomSprite("horizont_smooth_background", px, py - 0x08, 0x00, SPRITE_FLAG_FLIP_X, 0x2000)
-		}
-		else // Else draw the original AIR sprite
-		{
-			Renderer.drawCustomSprite("bluespheres_glow_background", px, py + 20, 0x00, 0x00, 0x2000)
-		}
-		
-		// Check if the custom sprite exist
-		if (Renderer.hasCustomSprite("horizont_smooth_foreground"))
-		{
-			Renderer.drawCustomSprite("horizont_smooth_foreground", px, py + 0x1e, 0x00, 0, 0x3100)
-			Renderer.drawCustomSprite("horizont_smooth_foreground", px, py + 0x1e, 0x00, SPRITE_FLAG_FLIP_X, 0x3100)
-		}
-		else // Else draw the original AIR sprite
-		{
-			Renderer.drawCustomSprite("bluespheres_glow_foreground", px, py + 0x1e, 0x00, 0x00, 0x3100)
-		}
-	}
-	// Sharped horizont
-	else
-	{
-		// Check if the custom sprite exist
-		if (Renderer.hasCustomSprite("horizont_sharp_background"))
-		{
-			Renderer.drawCustomSprite("horizont_sharp_background", px, py - 0x08, 0x00, 0, 0x2000)
-			Renderer.drawCustomSprite("horizont_sharp_background", px, py - 0x08, 0x00, SPRITE_FLAG_FLIP_X, 0x2000)
-		}
-		
-		// Check if the custom sprite exist
-		if (Renderer.hasCustomSprite("horizont_sharp_foreground"))
-		{
-			Renderer.drawCustomSprite("horizont_sharp_foreground", px, py + 0x1e, 0x00, 0, 0x3100)
-			Renderer.drawCustomSprite("horizont_sharp_foreground", px, py + 0x1e, 0x00, SPRITE_FLAG_FLIP_X, 0x3100)
-		}
-	}
-}
+// - - - - - - - - - - - - - - - - - - - //
+// Ground render stuff			  //
+// - - - - - - - - - - - - - - - - - - - //
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
 function void BlueSpheres.renderCustomGround()
@@ -92,14 +18,125 @@ function void BlueSpheres.renderCustomGround()
 	SpheresModSupport.renderCustomGround()
 }
 
+//? Manually render the HUD parts of this plane.
+function void SpheresModSupport.renderHUDPlane()
+{
+	// We will draw this only if your mod does not have display HUD sprites
+	if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter") && SpheresModSupport.hasDigitSprites())
+	{
+		// If the counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
+		if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter"))
+		{
+			Renderer.setupPlane(0x00, 0x00, 160, 32, 0x11, 0x03, 0x9ffe)
+			Renderer.setupPlane(getScreenWidth() - 160, 0x00, 160, 32, 0x11, 0x03, 0x9ffe)
+		}
+		else
+		{
+			Renderer.setupPlane(getScreenWidth() / 0x02 - 137, 13, 50, 14, 0x11, 0x03, 0x9ffe)
+			Renderer.setupPlane(getScreenWidth() / 0x02 + 87, 13, 50, 14, 0x11, 0x03, 0x9ffe)
+		}
+	}
+}
+
+//? Draw a custom ground horizont glow.
+function void SpheresModSupport.renderGroundHorizont()
+{
+	// Setup variables
+	s32 px = getScreenWidth() / 0x02
+	s32 py = getScreenHeight() - 224
+	
+	// Smoothed horizon when using modern style
+	if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
+	{
+		// The horizon that will be displayed behind the ground in the background
+		// Check if the custom sprite exist
+		if (Renderer.hasCustomSprite("horizont_smooth_background"))
+		{
+			Renderer.drawCustomSprite("horizont_smooth_background", px, py - 0x08, 0x00, 0x00, 0x2000)
+			Renderer.drawCustomSprite("horizont_smooth_background", px, py - 0x08, 0x00, SPRITE_FLAG_FLIP_X, 0x2000)
+		}
+		else // Render the original AIR sprite
+		{
+			Renderer.drawCustomSprite("bluespheres_glow_background", px, py + 20, 0x00, 0x00, 0x2000)
+		}
+		
+		// Horizon that will be displayed only on the ground
+		// Check if the custom sprite exist
+		if (Renderer.hasCustomSprite("horizont_smooth_foreground"))
+		{
+			Renderer.drawCustomSprite("horizont_smooth_foreground", px, py + 0x1e, 0x00, 0x00, 0x3100)
+			Renderer.drawCustomSprite("horizont_smooth_foreground", px, py + 0x1e, 0x00, SPRITE_FLAG_FLIP_X, 0x3100)
+		}
+		else // Render the original AIR sprite
+		{
+			Renderer.drawCustomSprite("bluespheres_glow_foreground", px, py + 0x1e, 0x00, 0x00, 0x3100)
+		}
+	}
+	// Sharped horizont when using classic style
+	else
+	{
+		// The horizon that will be displayed behind the ground in the background
+		// Check if the custom sprite exist
+		if (Renderer.hasCustomSprite("horizont_sharp_background"))
+		{
+			Renderer.drawCustomSprite("horizont_sharp_background", px, py - 0x08, 0x00, 0x00, 0x2000)
+			Renderer.drawCustomSprite("horizont_sharp_background", px, py - 0x08, 0x00, SPRITE_FLAG_FLIP_X, 0x2000)
+		}
+		
+		// Horizon that will be displayed only on the ground
+		// Check if the custom sprite exist
+		if (Renderer.hasCustomSprite("horizont_sharp_foreground"))
+		{
+			Renderer.drawCustomSprite("horizont_sharp_foreground", px, py + 0x1e, 0x00, 0x00, 0x3100)
+			Renderer.drawCustomSprite("horizont_sharp_foreground", px, py + 0x1e, 0x00, SPRITE_FLAG_FLIP_X, 0x3100)
+		}
+	}
+}
+
 //? Draw a custom ground.
 function void SpheresModSupport.renderCustomGround()
 {
 	u32 fieldColorBaseAddress = u32[0xffffe446]
 	Game.renderBlueSpheresGround(bluespheres.position.x, bluespheres.position.y, bluespheres.direction, u16[fieldColorBaseAddress], u16[fieldColorBaseAddress+0x08])
+	
 	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x01), 0x00, 0x00, 0x00, 0x00, 0x3000)
 	Renderer.drawCustomSprite(Game.getBlueSpheresGroundSprite(0x00), 0x00, 0x00, 0x00, 0x10, 0x3000) // With flag to draw as fully opaque (rendering optimization)
 }
+
+// - - - - - - - - - - - - - - - - - - - //
+// Custom character shadow	 //
+// - - - - - - - - - - - - - - - - - - - //
+
+//@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
+function void BlueSpheres.renderCustomCharacterShadows()
+{
+	// Setup variables
+	s32 px = getScreenWidth() / 0x02
+	s32 py = 0x94 + getScreenHeight() - 224
+	
+	// Smoothed character shadow when using modern style
+	if (Game.getSetting(SETTING_BS_VISUAL_STYLE) & 0x02)
+	{
+		// Check if the custom sprite exist
+		if (Renderer.hasCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_smooth" : "player_shadow_2P_smooth"))
+			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_smooth" : "player_shadow_2P_smooth", px, py, 0x00, 0x00, 0x3100)
+		else // Render the original AIR sprite
+			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_smooth" : "bluespheres_shadow_2P_smooth", 143 + getScreenExtend(), py, 0x00, 0x00, 0x3100)
+	}
+	// Sharped character shadow when using classic style
+	else
+	{
+		// Check if the custom sprite exist
+		if (Renderer.hasCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_sharp" : "player_shadow_2P_sharp"))
+			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "player_shadow_1P_sharp" : "player_shadow_2P_sharp", px, py, 0x00, 0x00, 0x3100)
+		else // Render the original AIR sprite
+			Renderer.drawCustomSprite(getNumPlayers() < 0x02 ? "bluespheres_shadow_1P_pixel" : "bluespheres_shadow_2P_pixel", 143 + getScreenExtend(), py, 0x00, 0x00, 0x3100)
+	}
+}
+
+// - - - - - - - - - - - - - - - - - - - //
+// Custom spheres stuff			//
+// - - - - - - - - - - - - - - - - - - - //
 
 //@ Function taken from sonic3air_dev/scripts/level/special/bluespheres.lemon
 function void BlueSpheres.renderCustomSpheres()
@@ -131,7 +168,7 @@ function void BlueSpheres.renderCustomSpheres()
 		// Setup advanced render properties
 		bool behindHorizon = (sphereDistance < 0x1a10)
 		u16 renderQueue = (behindHorizon ? 0x2000 : 0x9000) + sphereDistance / 0x200
-		u8 alpha = (sphereID == 0x0a || sphereID == 0x0c) ? 0xa0 : 0xff
+		u8 alpha = SpheresModSupport.getOnCollectedAlpha(sphereID)
 		u32 fog = clamp(s32(0x100000) / (sphereSize16 / 0x16), 0x00, 0x80) * 0x010101
 		
 		// Setup VDP properties
@@ -167,8 +204,6 @@ function void BlueSpheres.renderCustomSpheres()
 function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQueue, u8 alpha, u32 fog, u8 sphereID, u8 sphereSize32, u8 sphereSize16)
 {
 	string key
-	// This is left for compatibility with older versions DAGE
-	bool yellow2green = sphereID == 0x05 && (u8[0xffffef7c] && 0x01)
 	
 	// Red sphere
 	if (sphereID == 0x01 && Renderer.hasCustomSprite(stringformat("sphere_red_size_%d", sphereSize16)))
@@ -189,11 +224,6 @@ function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQu
 	else if (sphereID == 0x04 && Renderer.hasCustomSprite(stringformat("sphere_ring_%d_size_%d", static_rings.animframe, sphereSize16)))
 	{
 		key = stringformat("sphere_ring_%d_size_%d", static_rings.animframe, sphereSize16)
-	}
-	// Green sphere (0x0c when it's in a touch state) (Needed Sonic 3: D.A. Garden Edition mod)
-	else if (((sphereID == 0x0e || yellow2green) || sphereID == 0x0c) && Renderer.hasCustomSprite(stringformat("sphere_green_size_%d", sphereSize16)))
-	{
-		key = stringformat("sphere_green_size_%d", sphereSize16)
 	}
 	// Yellow sphere
 	else if (sphereID == 0x05 && Renderer.hasCustomSprite(stringformat("sphere_yellow_size_%d", sphereSize16)))
@@ -242,26 +272,9 @@ function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQu
 	Renderer.drawCustomSprite(key, px, py, 0x00, 0x00, renderQueue, 0x00, alpha)
 }
 
-//? Manually render the HUD parts of this plane.
-function void SpheresModSupport.renderHUDPlane()
-{
-	// Manually render the HUD parts of this plane (blue spheres and rings counter)
-	// We will draw this only if your mod does not have display HUD sprites
-	if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter") && SpheresModSupport.hasDigitSprites())
-	{
-		// If the counter sprite does not exist, then draw it completely, if it exists, then only a fragment with numbers
-		if !(Renderer.hasCustomSprite("display_hud_bluecounter") && Renderer.hasCustomSprite("display_hud_ringscounter"))
-		{
-			Renderer.setupPlane(0x00, 0x00, 160, 32, 0x11, 0x03, 0x9ffe)
-			Renderer.setupPlane(getScreenWidth() - 160, 0x00, 160, 32, 0x11, 0x03, 0x9ffe)
-		}
-		else
-		{
-			Renderer.setupPlane(getScreenWidth() / 0x02 - 137, 13, 50, 14, 0x11, 0x03, 0x9ffe)
-			Renderer.setupPlane(getScreenWidth() / 0x02 + 87, 13, 50, 14, 0x11, 0x03, 0x9ffe)
-		}
-	}
-}
+// - - - - - - - - - - - - - - - - - - - //
+// Custom HUD stuff				//
+// - - - - - - - - - - - - - - - - - - - //
 
 //? Render a custom Display HUD.
 function void SpheresModSupport.renderHUD(u16 renderQueue)

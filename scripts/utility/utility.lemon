@@ -1,5 +1,3 @@
-define char.animation_bs.sprite	= u8[A0 + 0x60]	// Currently shown animation sprite
-
 //@ Function taken from sonic3air_dev/scripts/standalone/enginecallbacks.lemon
 function void Init()
 {
