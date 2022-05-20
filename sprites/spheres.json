@@ -1,5 +1,6 @@
 {
 	// Yellow sphere
+	// - Оставлено здесь, специально для корректной работы с Sonic 3: D.A. Garden Edition.
 	"sphere_yellow_size_0": { "File": "spheres/sphere_yellow.png", "Rect": "1,1,32,32", "Center": "16,16" },
 	"sphere_yellow_size_1": { "File": "spheres/sphere_yellow.png", "Rect": "34,1,32,32", "Center": "16,16" },
 	"sphere_yellow_size_2": { "File": "spheres/sphere_yellow.png", "Rect": "67,1,32,32", "Center": "16,16" },
