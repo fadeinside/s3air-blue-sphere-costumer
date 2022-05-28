@@ -22,7 +22,7 @@ Enable this mod to run other sprite mods.
 
 This framework is similar to how Data Select Sprite Mod Support works. Therefore, for those who have previously worked with it, it will not be difficult to figure out how this one works.
 
-For an example of usage, check the folders __Blue Sphere Sprite Mod Support - EXAMPLE 1__ и __Blue Sphere Sprite Mod Support - EXAMPLE 2__, included in the archive with the mod. The resources for the change are kindly provided in the folder __Blue Sphere Sprite Mod Support - ASSETS__.
+For an example of usage, check the folders __Blue Sphere Sprite Mod Support - EXAMPLE 1__ and __Blue Sphere Sprite Mod Support - EXAMPLE 2__, included in the archive with the mod. The resources for the change are kindly provided in the folder __Blue Sphere Sprite Mod Support - ASSETS__.
 
 ## <font color="#6ee16c">FAQ:</font>
 
