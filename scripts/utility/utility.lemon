@@ -1,11 +1,11 @@
-//@ Function taken from sonic3air_dev/scripts/standalone/enginecallbacks.lemon
-function void Init()
+//@ Function taken from sonic3air_dev/scripts/standalone/entryfunctions.lemon
+function void scriptMainEntryPoint()
 {
 	// We will show a warning about the need to disable the ASSETS mod if it is active
 	assert(!Mods.isModActive("Blue Spheres Sprite Mod Support - ASSETS"), "Please, disable the 'Blue Spheres Sprite Mod Support - ASSETS' mod. This is included only to simplify the process of creating a mod, and is not necessary for causal use, and may cause compatibility issues.")
 	
 	// Call the base function
-	base.Init()
+	base.scriptMainEntryPoint()
 }
 
 //? Sets the state of the main character and animation frames for the extended framerate.

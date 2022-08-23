@@ -1,8 +1,16 @@
+#if STANDALONE
+
+#if GAMEAPP
+
 // Defines
 include _defines/?
+
+// Utility
+include utility/?
 
 // General
 include general/?
 
-// Utility
-include utility/?
+#endif
+
+#endif
