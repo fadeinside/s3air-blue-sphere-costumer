@@ -8,7 +8,7 @@ function void scriptMainEntryPoint()
 	base.scriptMainEntryPoint()
 }
 
-//? Sets the state of the main character and animation frames for the extended framerate.
+// Sets the state of the main character and animation frames for the extended framerate.
 function void SpheresModSupport.SetupFramerate_MainCharacter()
 {
 	// Character standing
@@ -52,7 +52,7 @@ function void SpheresModSupport.SetupFramerate_MainCharacter()
 	SpheresModSupport.SetupFramerateLimit_Characters()
 }
 
-//? Sets the state of the second character and the animation frames for the extended framerate.
+// Sets the state of the second character and the animation frames for the extended framerate.
 function void SpheresModSupport.SetupFramerate_SecondCharacter()
 {
 	// Character standing
@@ -96,7 +96,7 @@ function void SpheresModSupport.SetupFramerate_SecondCharacter()
 	SpheresModSupport.SetupFramerateLimit_Characters()
 }
 
-//? Sets an animation frame limit for the extended character framerate.
+// Sets an animation frame limit for the extended character framerate.
 function void SpheresModSupport.SetupFramerateLimit_Characters()
 {
 	D0 = char.animation_bs.sprite
@@ -110,7 +110,7 @@ function void SpheresModSupport.SetupFramerateLimit_Characters()
 	//debugLog(stringformat("Current movespeed: %d", bluespheres.movement_speed))
 }
 
-//? Sets the animation frames for the extended tail frame of the second character.
+// Sets the animation frames for the extended tail frame of the second character.
 function void SpheresModSupport.SetupFramerate_TailObject()
 {
 	// Variables
@@ -129,7 +129,7 @@ function void SpheresModSupport.SetupFramerate_TailObject()
 	SpheresModSupport.SetupFramerateLimit_TailObject()
 }
 
-//? Sets an animation frame limit for the extended tail frame of the second character.
+// Sets an animation frame limit for the extended tail frame of the second character.
 function void SpheresModSupport.SetupFramerateLimit_TailObject()
 {
 	D0 = char.animation_bs.sprite

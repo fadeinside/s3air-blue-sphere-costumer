@@ -1,4 +1,10 @@
-//? Get the transparency value for some spheres during collecting.
+// When enabled, spheres that are now behind the screen, or beyond the horizon, will not rendered.
+function bool SpheresModSupport.renderSpheresOptimize()
+{
+	return false
+}
+
+// Get the transparency value for some spheres during collecting.
 function u8 SpheresModSupport.getOnCollectedAlpha(u8 sphereID)
 {
 	// Make some spheres transparent during collecting when modern style is used
@@ -13,7 +19,7 @@ function u8 SpheresModSupport.getOnCollectedAlpha(u8 sphereID)
 	return 0xff
 }
 
-//? Returns the emerald sprite key.
+// Returns the emerald sprite key.
 function string SpheresModSupport.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
 {
 	// Use the stage number or algorithmic stage information to get the emerald color ID
@@ -26,7 +32,7 @@ function string SpheresModSupport.getEmeraldSprite(u8 sphereID, u8 sphereSize16)
 	return stringformat("emerald_%s_0x%02x_size_%d", emeraldType, emeraldColorID, sphereSize16)
 }
 
-//? Returns the sphere transformation, depending on its size. (The method of using 32 frames is smoother, but visually does not correspond to the perspective of the ground. It is recommended to use the 16 frames method). Used to transform the sphere size, depending on its size on the ground, as an example, the rings in Blue Spheres stages from Mania uses something similar.
+// Returns the sphere transformation, depending on its size. (The method of using 32 frames is smoother, but visually does not correspond to the perspective of the ground. It is recommended to use the 16 frames method). Used to transform the sphere size, depending on its size on the ground, as an example, the rings in Blue Spheres stages from Mania uses something similar.
 function u32 SpheresModSupport.get2DTransformSize32(u8 sphereSize32)
 {
 	if (sphereSize32 == 0x1f)
@@ -95,7 +101,7 @@ function u32 SpheresModSupport.get2DTransformSize32(u8 sphereSize32)
 		return 65536
 }
 
-//? Returns the sphere transformation, depending on its size. Used to transform the sphere size, depending on its size on the ground, as an example, the rings in Blue Spheres stages from Mania uses something similar.
+// Returns the sphere transformation, depending on its size. Used to transform the sphere size, depending on its size on the ground, as an example, the rings in Blue Spheres stages from Mania uses something similar.
 function u32 SpheresModSupport.get2DTransformSize16(u8 sphereSize16)
 {
 	if (sphereSize16 == 0x0f)
@@ -132,7 +138,7 @@ function u32 SpheresModSupport.get2DTransformSize16(u8 sphereSize16)
 		return 0x10000
 }
 
-//? Returns the sphere size, expanded from 16 to 32 frames, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x1f - Small sphere size, since it is farthest from the camera
+// Returns the sphere size, expanded from 16 to 32 frames, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x1f - Small sphere size, since it is farthest from the camera
 function u8 SpheresModSupport.getSphereSize32(u16 sphereDistance)
 {
 	if (sphereDistance < 5952)
@@ -201,7 +207,7 @@ function u8 SpheresModSupport.getSphereSize32(u16 sphereDistance)
 		return 0x00
 }
 
-//? Returns the sphere size, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x0f - Small sphere size, since it is farthest from the camera
+// Returns the sphere size, depending on its distance. Thus, 0x00 - Large sphere size, since closer to the camera, 0x0f - Small sphere size, since it is farthest from the camera
 function u8 SpheresModSupport.getSphereSize16(u16 sphereDistance)
 {
 	if (sphereDistance < 5952)
@@ -238,7 +244,7 @@ function u8 SpheresModSupport.getSphereSize16(u16 sphereDistance)
 		return 0x00
 }
 
-//? Check for all digit sprites (Used inside this mod just for optimization).
+// Check for all digit sprites (Used inside this mod just for optimization).
 function bool SpheresModSupport.hasDigitSprites()
 {
 	// Check if the custom sprites exist

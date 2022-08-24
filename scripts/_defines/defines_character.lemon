@@ -4,4 +4,4 @@
 // - 0xffffb000 = Main character (Sonic, Tails or Knuckles)
 // - 0xffffb04a = Tails as second character
 
-define char.animation_bs.sprite	= u8[A0 + 0x60]	// Currently shown animation sprite
+define char.animation_bs.sprite			= u8[A0 + 0x60]		// Currently shown animation sprite
