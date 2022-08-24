@@ -5,3 +5,4 @@
 // - 0xffffb04a = Tails as second character
 
 define char.animation_bs.sprite			= u8[A0 + 0x60]		// Currently shown animation sprite
+define char.animation_bs.sprite.u16			= u16[A0 + 0x60]

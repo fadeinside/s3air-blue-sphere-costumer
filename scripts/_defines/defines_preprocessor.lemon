@@ -1,4 +1,4 @@
 // Pre-processor defines
 // - Read Oxygen Handbook for details
 
-#define SPHERES_MOD_SUPPORT_ACTIVE			= true
+#define SPHERES_MOD_SUPPORT_ACTIVE			= 0x1100

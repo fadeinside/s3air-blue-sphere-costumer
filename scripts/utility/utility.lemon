@@ -11,8 +11,11 @@ function void scriptMainEntryPoint()
 // Sets the state of the main character and animation frames for the extended framerate.
 function void SpheresModSupport.SetupFramerate_MainCharacter()
 {
+	// Variables
+	bool isJump	= u8[0xffffe432] & 0x80
+	
 	// Character standing
-	if (!bluespheres.started_running && !(u8[0xffffe432] & 0x80))
+	if (!bluespheres.started_running && !isJump)
 	{
 		// Set character state
 		char.state = char.state.STANDING
@@ -22,31 +25,26 @@ function void SpheresModSupport.SetupFramerate_MainCharacter()
 	}
 	
 	// Character running
-	if (bluespheres.started_running && !(u8[0xffffe432] & 0x80))
+	if (bluespheres.started_running && !isJump)
 	{
 		// Set character state
 		char.state = char.state.RUNNING
 		
 		// Setup frames
-		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += (0x00 - bluespheres.movement_speed) >> 0x05
-		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
+		char.animation_bs.sprite.u16 += abs(bluespheres.movement_speed) >> 0x05
 	}
 	
 	// Character jump
-	if (u8[0xffffe432] & 0x80)
+	if (isJump)
 	{
 		// Set character state
 		char.state = char.state.ROLLING
 		
 		// Setup frames
-		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += (0x00 - bluespheres.movement_speed) >> 0x05
-		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else // Otherwise use the initial speed
-			u16[A0 + 0x60] += 0x1000 >> 0x05
+		if (bluespheres.movement_speed == 0x00)
+			char.animation_bs.sprite.u16 += 0x1000 >> 0x05
+		else
+			char.animation_bs.sprite.u16 += abs(bluespheres.movement_speed) >> 0x05
 	}
 	
 	SpheresModSupport.SetupFramerateLimit_Characters()
@@ -55,8 +53,11 @@ function void SpheresModSupport.SetupFramerate_MainCharacter()
 // Sets the state of the second character and the animation frames for the extended framerate.
 function void SpheresModSupport.SetupFramerate_SecondCharacter()
 {
+	// Variables
+	bool isJump	= u8[0xffffe432] & 0x80
+	
 	// Character standing
-	if (!bluespheres.started_running && !(u8[0xffffe440] & 0x80))
+	if (!bluespheres.started_running && !isJump)
 	{
 		// Set character state
 		char.state = char.state.STANDING
@@ -66,31 +67,26 @@ function void SpheresModSupport.SetupFramerate_SecondCharacter()
 	}
 	
 	// Character running
-	if (bluespheres.started_running && !(u8[0xffffe440] & 0x80))
+	if (bluespheres.started_running && !isJump)
 	{
 		// Set character state
 		char.state = char.state.RUNNING
 		
 		// Setup frames
-		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += (0x00 - bluespheres.movement_speed) >> 0x05
-		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
+		char.animation_bs.sprite.u16 += abs(bluespheres.movement_speed) >> 0x05
 	}
 	
 	// Character jump
-	if (u8[0xffffe440] & 0x80)
+	if (isJump)
 	{
 		// Set character state
 		char.state = char.state.ROLLING
 		
 		// Setup frames
-		if (bluespheres.movement_speed < 0x00) // If the speed of movement is negative, convert into positive
-			u16[A0 + 0x60] += (0x00 - bluespheres.movement_speed) >> 0x05
-		else if (bluespheres.movement_speed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-			u16[A0 + 0x60] += bluespheres.movement_speed >> 0x05
-		else // Otherwise use the initial speed
-			u16[A0 + 0x60] += 0x1000 >> 0x05
+		if (bluespheres.movement_speed == 0x00)
+			char.animation_bs.sprite.u16 += 0x1000 >> 0x05
+		else
+			char.animation_bs.sprite.u16 += abs(bluespheres.movement_speed) >> 0x05
 	}
 	
 	SpheresModSupport.SetupFramerateLimit_Characters()
@@ -117,14 +113,10 @@ function void SpheresModSupport.SetupFramerate_TailObject()
 	u16 bluespheres.faded_speed = (bluespheres.current_gamespeed >> 0x02)
 	
 	// Setup frames
-	if (bluespheres.movement_speed == 2048) // If you have collected all the spheres, then use the initial speed
-		u16[A0 + 0x60] += (0x1000 - (0x1000 >> 0x02)) >> 0x05
-	else if (bluespheres.current_gamespeed < 0x00) // If the speed of movement is negative, convert into positive
-		u16[A0 + 0x60] += (0x00 - (bluespheres.current_gamespeed - bluespheres.faded_speed)) >> 0x05
-	else if (bluespheres.current_gamespeed != 0x00) // If the speed of movement is not 0, then the speed of animations depends on the speed of movement
-		u16[A0 + 0x60] += (bluespheres.current_gamespeed - bluespheres.faded_speed) >> 0x05
-	else // Otherwise use the initial speed
-		u16[A0 + 0x60] += (0x1000 - (0x1000 >> 0x02)) >> 0x05
+	if (bluespheres.movement_speed == 2048 || bluespheres.movement_speed == 0x00)
+		char.animation_bs.sprite.u16 += (0x1000 - (0x1000 >> 0x02)) >> 0x05
+	else
+		char.animation_bs.sprite.u16 += abs((bluespheres.current_gamespeed - bluespheres.faded_speed)) >> 0x05
 	
 	SpheresModSupport.SetupFramerateLimit_TailObject()
 }
@@ -176,7 +168,7 @@ function void fn009488()
 //# address-hook(0x008faa) end(0x009038)
 function void fn008faa()
 {
-	base.fn008faa() // Call the base function
+	base.fn008faa()	// Call the base function
 	objA0.value32 += getScreenHeight() - 224
 }
 
@@ -184,7 +176,7 @@ function void fn008faa()
 //# address-hook(0x009212) end(0x009274)
 function void fn009212()
 {
-	base.fn009212() // Call the base function
+	base.fn009212()	// Call the base function
 	objA0.value32 += getScreenHeight() - 224
 }
 
@@ -199,6 +191,6 @@ function void fn009444()
 		return
 	}
 	
-	base.fn009444() // Call the base function
+	base.fn009444()	// Call the base function
 	objA0.value32 += getScreenHeight() - 224
 }
