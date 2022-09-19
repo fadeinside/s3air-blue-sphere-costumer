@@ -5,7 +5,7 @@
 		"Author": "FadeInside" ,
 		"Description": "Adds support for sprite modding related to gameplay elements of Special Stages Blue Spheres, and also makes a few minor improvements.\nEnable this mod to run other sprite mods.",
 		"URL": "https://github.com/fadeinside/s3air-blue-spheres-mod-support/",
-		"ModVersion": "v1.1 (Dev 2022.08.24)",
-		"GameVersion": "v22.08.13.0"
+		"ModVersion": "v1.1 (Release 2022.09.19)",
+		"GameVersion": "v22.09.10.0"
 	}
 }

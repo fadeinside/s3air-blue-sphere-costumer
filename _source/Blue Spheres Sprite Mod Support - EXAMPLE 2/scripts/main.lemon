@@ -1,0 +1,129 @@
+global bool bluespheres.timer.show	// true if timer is shown
+
+//? Draw a custom spheres.
+function void SpheresModSupport.renderCustomSpheres(u16 px, u16 py, u16 renderQueue, u8 alpha, u32 fog, u8 sphereID, u8 sphereSize32, u8 sphereSize16)
+{
+	string key
+	
+	// Bumper
+	if (sphereID == 0x03 && isMainCharacter(CHARACTER_SONIC))
+	{
+		key = stringformat("sphere_bumper_blue_size_%d", sphereSize16)
+		Renderer.drawCustomSprite(key, px, py, 0x00, 0x00, renderQueue, 0x00, alpha)
+	}
+	else if (sphereID == 0x03 && isMainCharacter(CHARACTER_TAILS))
+	{
+		key = stringformat("sphere_bumper_yellow_size_%d", sphereSize16)
+		Renderer.drawCustomSprite(key, px, py, 0x00, 0x00, renderQueue, 0x00, alpha)
+	}
+	else
+	{
+		// Call the base function
+		base.SpheresModSupport.renderCustomSpheres(px, py, renderQueue, alpha, fog, sphereID, sphereSize32, sphereSize16)
+	}
+}
+
+function void BlueSpheresTimer.renderTimer(s32 minutes, s32 seconds, s32 centiseconds, s32 px, s32 py, u16 renderQueue)
+{
+	// Setup variables
+	bluespheres.timer.show = (py != 0x00) ? true : false
+	px = 0x57
+	py = 0x0e
+	
+	py -= 0x06
+	px -= (minutes < 0x0a) ? 0x08 : 0x00
+	
+	if (Game.getSetting(SETTING_EXTENDED_HUD) || u8[0x8e1216]) // || Use extended HUD in Time Attack mode
+	{
+		px -= 0x40 / 0x02
+		if (minutes >= 0x0a)
+			HUD.drawNumber("hud_digit_%d", minutes / 0x0a, px, py, renderQueue)
+		HUD.drawNumber("hud_digit_%d", minutes % 0x0a, px + 0x08, py, renderQueue)
+		HUD.drawSprite("hud_char_minutes", px + 0x10, py, renderQueue)
+		HUD.drawNumber("hud_digit_%d", seconds / 0x0a, px + 0x18, py, renderQueue)
+		HUD.drawNumber("hud_digit_%d", seconds % 0x0a, px + 0x20, py, renderQueue)
+		HUD.drawSprite("hud_char_seconds", px + 0x28, py, renderQueue)
+		HUD.drawNumber("hud_digit_%d", centiseconds / 0x0a, px + 0x30, py, renderQueue)
+		HUD.drawNumber("hud_digit_%d", centiseconds % 0x0a, px + 0x38, py, renderQueue)
+	}
+	else
+	{
+		px -= 0x04 + 0x08
+		px -= 0x28 / 0x02
+		if (minutes >= 0x0a)
+			HUD.drawNumber("hud_digit_%d", minutes / 0x0a, px, py, renderQueue)
+		HUD.drawNumber("hud_digit_%d", minutes % 0x0a, px + 0x08, py, renderQueue)
+		HUD.drawSprite("hud_char_colon", px + 0x10, py, renderQueue)
+		HUD.drawNumber("hud_digit_%d", seconds / 0x0a, px + 0x18, py, renderQueue)
+		HUD.drawNumber("hud_digit_%d", seconds % 0x0a, px + 0x20, py, renderQueue)
+	}
+}
+
+function void SpheresModSupport.renderHUDPlane()
+{
+}
+
+//? Render a custom Display HUD.
+function void SpheresModSupport.renderHUD(u16 renderQueue)
+{
+	// Setup variables
+	s32 baseX = 0x0f
+	s32 baseY = 0x08
+	
+	// Lives (not visible in Time Attack)
+	if (!u8[0x8e1216] && !Game.getSetting(SETTING_INFINITE_LIVES))
+	{
+		bool useMobilePosition = HUD.useMobileLivesDisplay()
+		s32 px = useMobilePosition ? (getScreenWidth() - baseX - 0x30) : baseX
+		s32 py = useMobilePosition ? baseY : getScreenHeight() - 24
+		
+		string characterName = (u8[0xffffe654] != 0x00) ? stringformat("slot%d", u8[0xffffe654]) : ((getMainCharacter() == CHARACTER_SONIC) ? "sonic" : ((getMainCharacter() == CHARACTER_TAILS) ? ((global.region_code & 0x80) ? "tails" : "miles") : "knuckles"))
+		HUD.drawSprite(stringformat("hud_lives_icon_%s", characterName), px, py, renderQueue)
+		
+		if (lives_counter >= 0x0a)
+			HUD.drawSmallDigit(s32((lives_counter / 0x0a) % 0x0a), px + 0x20, py + 0x08, renderQueue)
+		HUD.drawSmallDigit(s32(lives_counter % 0x0a), px + 0x28, py + 0x08, renderQueue)
+	}
+	
+	// Time (in Time Attack)
+	if (bluespheres.timer.show)
+	{
+		HUD.drawSprite("hud_text_time", baseX, baseY, renderQueue)
+		baseY += 0x10
+	}
+	
+	// Rings
+	{
+		HUD.drawSprite("hud_text_rings", baseX, baseY, renderQueue)
+		s32 px = baseX + (Game.getSetting(SETTING_EXTENDED_HUD) ? 0x58 : 0x4c)
+		
+		s32 rings_counter = bluespheres.rings_collected
+		for (s32 value = rings_counter;;)
+		{
+			HUD.drawDigit(value % 0x0a, px, baseY, renderQueue)
+			px -= 0x08
+			value /= 0x0a
+			
+			if (value == 0x00)
+				break
+		}
+		baseY += 0x10
+	}
+	
+	// Spheres
+	{
+		HUD.drawSprite("display_hud_text_spheres", baseX, baseY, renderQueue)
+		u16 px = baseX + (Game.getSetting(SETTING_EXTENDED_HUD) ? 0x58 : 0x4c)
+		
+		s32 blue_counter = bluespheres.blue_remaining
+		for (s32 value = blue_counter;;)
+		{
+			HUD.drawDigit(value % 0x0a, px, baseY, renderQueue)
+			px -= 0x08
+			value /= 0x0a
+			
+			if (value == 0x00)
+				break
+		}
+	}
+}

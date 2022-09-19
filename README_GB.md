@@ -12,7 +12,7 @@ Enable this mod to run other sprite mods.<br><br>
 <font color="#6ee16c"><h2>How to use:</h2></font>
 This framework is similar to how Data Select Sprite Mod Support works. Therefore, for those who have previously worked with it, it will not be difficult to figure out how this one works.<br><br>
 
-For an example of usage, check the folders <u>Blue Sphere Sprite Mod Support - EXAMPLE 1</u> and <u>Blue Sphere Sprite Mod Support - EXAMPLE 2</u>, included in the archive with the mod. The resources for the change are kindly provided in the folder <u>Blue Sphere Sprite Mod Support - ASSETS</u>.<br><br>
+For an example of usage, check the folders <u>Blue Spheres Sprite Mod Support - EXAMPLE 1</u> and <u>Blue Spheres Sprite Mod Support - EXAMPLE 2</u>, included in the <u>_source</u> folder inside the mod. The resources for the change are kindly provided in the folder <u>Blue Spheres Sprite Mod Support - ASSETS</u>.<br><br>
 
 <font color="#6ee16c"><h2>FAQ:</h2></font>
 <ul>Q. I noticed a bug, where can I contact?<br>

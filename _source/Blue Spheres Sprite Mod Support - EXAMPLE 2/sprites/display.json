@@ -1,0 +1,8 @@
+{
+	// "Spheres" HUD text
+	"display_hud_text_spheres": { "File": "display/display_hud.png", "Rect": "1,1,55,11", "Center": "0,-1" },
+
+	// Display counters
+	"display_hud_bluecounter": { "File": "display/display_hud.png", "Rect": "1,1,0,0", "Center": "0,0" },
+	"display_hud_ringscounter": { "File": "display/display_hud.png", "Rect": "1,1,0,0", "Center": "0,0" }
+}

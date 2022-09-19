@@ -1,0 +1,11 @@
+{
+	"Metadata":
+	{
+		"Name": "Blue Spheres Sprite Mod Support - EXAMPLE 1",
+		"Author": "FadeInside" ,
+		"Description": "Simple sprite-mod example of using \"Blue Spheres Sprite Mod Support\"",
+		"URL": "https://github.com/fadeinside/s3air-blue-spheres-mod-support",
+		"ModVersion": "1.0.0",
+		"GameVersion": "21.09.28.0"
+	}
+}
